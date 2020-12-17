@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -31,7 +32,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Enver ASLAN on 16/12/2020.
+ * Created by SahanaB on 09/09/18.
  */
 public class CustomHorizontalCalendar extends RelativeLayout {
     private RecyclerView mRecyclerView;
@@ -167,7 +168,7 @@ public class CustomHorizontalCalendar extends RelativeLayout {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (recyclerView.getLayoutManager() != null) {
                     View centerView = snapHelper.findSnapView(recyclerView.getLayoutManager());
@@ -180,7 +181,7 @@ public class CustomHorizontalCalendar extends RelativeLayout {
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (recyclerView.getLayoutManager() != null) {
                     View centerView = snapHelper.findSnapView(recyclerView.getLayoutManager());
@@ -236,7 +237,7 @@ public class CustomHorizontalCalendar extends RelativeLayout {
 
         boolean dateExists = date.after(mStartDate) && date.before(endDate);
 
-        if (dateExists == false)
+        if (!dateExists)
             throw new ArrayIndexOutOfBoundsException("The date does not exist");
 
         long diff = date.getTime() - mStartDate.getTime();
