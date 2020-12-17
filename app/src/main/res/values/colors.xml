@@ -14,4 +14,11 @@
     <color name="colorDogwoodRose">#D90368</color>
     <color name="colorCinereous">#8D7471</color>
     <color name="colorRocketMetallic">#816F68</color>
+
+    <color name="dark_gray">#FF858585</color>
+    <color name="white">#FFFFFF</color>
+    <color name="skyBlue">#4ba6bb</color>
+    <color name="black">#000000</color>
+    <color name="text">#FF858585</color>
+    <color name="light_gray">#f2f2f2</color>
 </resources>
