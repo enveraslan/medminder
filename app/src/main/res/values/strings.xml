@@ -9,4 +9,6 @@
     <string name="treatments">Treatments</string>
     <string name="add_measurement">Add Measurement</string>
     <string name="add_medicine">Add Medicine</string>
+    <string name="title">Your Label Goes Here</string>
+    <string name="todo">TODO</string>
 </resources>

@@ -14,6 +14,15 @@
         android:orientation="vertical">
         <include
             layout="@layout/main_toolbar"/>
+        <com.aae.medminder.components.calendar.CustomHorizontalCalendar
+            android:id="@+id/calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:numOfDays="90"
+            android:background="@color/colorBlueMunsell"
+            app:setMonthColor="@color/colorAlabaster"
+            android:elevation="5dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,5 +40,7 @@
             layout="@layout/main_nav_drawer" />
 
     </RelativeLayout>
+
+
 
 </android.support.v4.widget.DrawerLayout>

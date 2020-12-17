@@ -6,7 +6,8 @@
     android:orientation="horizontal"
     android:padding="12dp"
     android:gravity="center_vertical"
-    android:background="@color/colorBlueMunsell">
+    android:background="@color/colorBlueMunsell"
+    android:elevation="5dp">
     
     <ImageView
         android:layout_width="wrap_content"
