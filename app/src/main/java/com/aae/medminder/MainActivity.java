@@ -89,11 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     }
 
     public void ClickPharmacies(View view) {
-        //Toast toast = Toast.makeText(getApplicationContext(), "Pharmacies", Toast.LENGTH_LONG);
-        //toast.show();
-
         startActivity(new Intent(this, PermissionsActivity.class));
-        finish();
     }
 
     public void ClickSettings(View view) {
