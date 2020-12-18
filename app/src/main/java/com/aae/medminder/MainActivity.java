@@ -1,5 +1,6 @@
 package com.aae.medminder;
 
+import android.content.Intent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -88,8 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     }
 
     public void ClickPharmacies(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(), "Pharmacies", Toast.LENGTH_LONG);
-        toast.show();
+        startActivity(new Intent(this, PermissionsActivity.class));
     }
 
     public void ClickSettings(View view) {

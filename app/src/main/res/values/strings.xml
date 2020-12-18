@@ -11,4 +11,6 @@
     <string name="add_medicine">Add Medicine</string>
     <string name="title">Your Label Goes Here</string>
     <string name="todo">TODO</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="google_maps_api">AIzaSyDuxj6VtjBG75yPq4N3Qu8jv4oEhs-KABw</string>
 </resources>
