@@ -13,4 +13,25 @@
     <string name="todo">TODO</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="google_maps_api">AIzaSyDuxj6VtjBG75yPq4N3Qu8jv4oEhs-KABw</string>
+
+    <string-array name="medicine_type_array">
+        <item>Medicine Type</item>
+        <item>Capsule</item>
+        <item>Liquid</item>
+        <item>Tablet</item>
+    </string-array>
+
+    <string-array name="interval_array">
+        <item>Interval</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>9 hours</item>
+    </string-array>
+
+    <string-array name="instruction_array">
+        <item>Instructions</item>
+        <item>Do it</item>
+        <item>Do not do it</item>
+    </string-array>
+
 </resources>
