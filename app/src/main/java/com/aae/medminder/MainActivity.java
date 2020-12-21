@@ -64,48 +64,43 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     }
 
     public void ClickAddMedicine(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(), "Add Medicine", Toast.LENGTH_LONG);
-        toast.show();
+
+        startActivity(new Intent(this, AddMedicineActivity.class));
     }
 
     public void ClickAddMeasurement(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(), "Add Measurement", Toast.LENGTH_LONG);
-        toast.show();
+
+        startActivity(new Intent(this, AddMedicineActivity.class));
     }
 
     public void ClickTreatments(View view) {
-        //Toast toast = Toast.makeText(getApplicationContext(), "Treatments", Toast.LENGTH_LONG);
-        //toast.show();
 
         startActivity(new Intent(this, TreatmentActivity.class));
     }
 
     public void ClickDoctors(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(), "Doctors", Toast.LENGTH_LONG);
-        toast.show();
+
+        startActivity(new Intent(this, DoctorsActivity.class));
     }
 
     public void ClickAppointments(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(), "Appointments", Toast.LENGTH_LONG);
-        toast.show();
+
+        startActivity(new Intent(this, AppointmentsActivity.class));
     }
 
     public void ClickPharmacies(View view) {
-        //Toast toast = Toast.makeText(getApplicationContext(), "Pharmacies", Toast.LENGTH_LONG);
-        //toast.show();
 
         startActivity(new Intent(this, PermissionsActivity.class));
     }
 
     public void ClickSettings(View view) {
+
         Toast toast = Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_LONG);
         toast.show();
     }
 
     @Override
     public void onDateClick(DateModel dateModel) {
-
-
 
         Log.d("date", dateModel != null ? dateModel.month + dateModel.day + dateModel.dayOfWeek + dateModel.year : "");
     }
