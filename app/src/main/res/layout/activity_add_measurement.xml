@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddMeasurementActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="35dp">
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerMeasurement"
+                android:paddingLeft="5dp"
+                android:entries="@array/measurement_type_array"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/interval_spinner"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="5dp"
+                android:entries="@array/interval_array"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <EditText
+                    android:id="@+id/time_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="7dp"
+                    android:hint="Time"
+                    android:inputType="text" />
+
+                <Button
+                    android:id="@+id/setTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="0.2"
+                    android:layout_marginEnd="7dp"
+                    android:background="@color/colorBlueMunsell"
+                    android:text="Set Time"
+                    android:textColor="@color/colorAlabaster" />
+
+                <Button
+                    android:id="@+id/addAnotherTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@color/colorBlueMunsell"
+                    android:textColor="@color/colorAlabaster"
+                    android:text="Add Another Time"
+                    android:layout_weight="0.35"/>
+
+            </LinearLayout>
+
+
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/instructions_spinner"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="5dp"
+                android:entries="@array/instruction_array"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <EditText
+                    android:id="@+id/starts_from_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Time"
+                    android:inputType="text" />
+
+                <Button
+                    android:id="@+id/setDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:background="@color/colorBlueMunsell"
+                    android:textColor="@color/colorAlabaster"
+                    android:layout_weight="0.25"
+                    android:text="Set Date" />
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorAlabaster"
+                android:background="@color/colorBlueMunsell"
+                android:text="Save" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
