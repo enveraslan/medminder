@@ -95,8 +95,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
 
     public void ClickSettings(View view) {
 
-        Toast toast = Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_LONG);
-        toast.show();
+        startActivity(new Intent(this, ProfileActivity.class));
     }
 
     @Override
