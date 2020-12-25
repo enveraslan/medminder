@@ -15,86 +15,78 @@
         android:padding="35dp">
 
         <TextView
-            android:id="@+id/textViewDoctorFirstName"
+            android:id="@+id/textViewFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="First Name" />
 
         <EditText
-            android:id="@+id/editTextDoctorFirstName"
+            android:id="@+id/editTextFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
 
-
         <TextView
-            android:id="@+id/textViewDoctorLastName"
+            android:id="@+id/textViewLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Last Name" />
 
         <EditText
-            android:id="@+id/editTextDoctorLastName"
+            android:id="@+id/editTextLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
 
         <TextView
-            android:id="@+id/textViewDoctorPhoneNumber"
+            android:id="@+id/textViewBirthDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Phone Number" />
+            android:text="Birth Date" />
 
         <EditText
-            android:id="@+id/editTextDoctorPhoneNumber"
+            android:id="@+id/editTextBirthDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone" />
+            android:inputType="date" />
 
         <TextView
-            android:id="@+id/textViewDoctorEmail"
+            android:id="@+id/textViewAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Email" />
+            android:text="Address" />
 
         <EditText
-            android:id="@+id/editTextDoctorEmail"
+            android:id="@+id/editTextAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
 
         <TextView
-            android:id="@+id/textViewDoctorLocation"
+            android:id="@+id/textViewZipcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Location" />
+            android:text="Zip Code" />
+
         <EditText
-            android:id="@+id/editTextDoctorLocation"
+            android:id="@+id/editTextZipCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
+
 
         <Button
-            android:id="@+id/buttonSaveDoctor"
+            android:id="@+id/buttonSaveProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Save Doctor"
+            android:text="Save"
             android:textColor="@color/colorAlabaster"
             android:background="@color/colorBlueMunsell"/>
-
-        <Button
-            android:id="@+id/buttonDeleteDoctor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorCinnebar"
-            android:text="Delete Doctor"
-            android:textColor="@color/colorBabyPowder" />
 
 
     </LinearLayout>

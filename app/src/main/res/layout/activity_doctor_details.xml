@@ -4,45 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorAlabaster">
+    android:background="@color/colorBabyPowder">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorBlueMunsell" />
+    <include layout="@layout/toolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="35dp">
-
-        <EditText
-            android:id="@+id/phone_input"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone Number"
-            android:inputType="text" />
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <EditText
-            android:id="@+id/email_input"
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textViewPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Phone Number: " />
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="E-mail: " />
+
+            <TextView
+                android:id="@+id/textViewLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location: " />
+        </LinearLayout>
+        <Button
+            android:layout_gravity="center"
+            android:id="@+id/buttonEditDoctor"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Email"
-            android:inputType="text" />
-
-        <EditText
-            android:id="@+id/address_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Address"
-            android:inputType="text" />
-
+            android:background="@color/colorBlueMunsell"
+            android:onClick="clickEditDoctorButton"
+            android:text="Edit"
+            android:textColor="@color/colorAlabaster" />
     </LinearLayout>
+
+
 
 
 
