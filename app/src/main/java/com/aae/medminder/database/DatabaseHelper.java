@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.strictmode.SqliteObjectLeakedViolation;
 
+import com.aae.medminder.models.Doctor;
 import com.aae.medminder.models.Profile;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -37,23 +38,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         updateDatabase(db, 0, DB_VERSION);
 
-
     }
-
 
 
     private void updateDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(createProfile());
-
-
+        db.execSQL(createDoctor());
         Profile profile = new Profile();
         insertProfile(db, profile);
-
     }
 
 
 
-    //Profile CRUD
+    // Profile CRUD
     public String createProfile() {
         return "CREATE TABLE Profile(" +
                 "firstName TEXT, " +
@@ -90,6 +87,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update("Profile", profileValues, null, null);
     }
     // End Profile CRUD
+
+    // Doctor CRUD
+    public String createDoctor() {
+        return "CREATE TABLE Doctor(" +
+                "doctorID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "firstName TEXT, " +
+                "lastName TEXT, " +
+                "phoneNumber TEXT, " +
+                "email TEXT, " +
+                "location TEXT)";
+    }
+
+    public static void insertDoctor(SQLiteDatabase db, Doctor doctor) {
+        ContentValues doctorValues = new ContentValues();
+        doctorValues.put("firstName", doctor.getFirstName());
+        doctorValues.put("lastName", doctor.getLastName());
+        doctorValues.put("phoneNumber", doctor.getPhoneNumber());
+        doctorValues.put("email", doctor.getEmail());
+        doctorValues.put("location", doctor.getLocation());
+        db.insert("Doctor", null, doctorValues);
+    }
+
+    public static Cursor selectDoctor(SQLiteDatabase db) {
+        String table = "Doctor";
+        String[] columns = {"doctorID", "firstName", "lastName", "phoneNumber", "email", "location"};
+        return db.query(table, columns, null, null, null, null, null, null);
+
+    }
+    // End Doctor CRUD
 
     public String createPerson() {
         return "CREATE TABLE Person(" +
