@@ -70,6 +70,7 @@ public class AddMedicineActivity extends AppCompatActivity {
                 int minute = calendar.get(Calendar.MINUTE);
 
                 TimePickerDialog tpd = new TimePickerDialog(context,
+                        android.R.style.Theme_Holo_Light_Dialog,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -78,6 +79,7 @@ public class AddMedicineActivity extends AppCompatActivity {
                         }, hour, minute, true);
                 tpd.setButton(TimePickerDialog.BUTTON_POSITIVE, "Choose", tpd);
                 tpd.setButton(TimePickerDialog.BUTTON_NEGATIVE, "Cancel", tpd);
+
                 tpd.show();
             }
         });

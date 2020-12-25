@@ -1,36 +1,44 @@
 package com.aae.medminder.models;
 
-import android.text.TextUtils;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Property;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.greenrobot.greendao.annotation.Generated;
 
+@Entity (nameInDb = "Profile")
 public class Profile {
+    @Id
+    @Property (nameInDb = "firstName")
     private String firstName;
+    @Property (nameInDb = "lastName")
     private String lastName;
-    private Date birthDate;
+    @Property (nameInDb = "birthDate")
+    private String birthDate;
+    @Property (nameInDb = "address")
     private String address;
+    @Property (nameInDb = "zipCode")
     private String zipCode;
 
-    public Profile() {
-        this(null,null,null,null,null);
-    }
-    public Profile(String firstName, String lastName, String birthDate, String address, String zipCode) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+
+
+
+
+    @Generated(hash = 277576540)
+    public Profile(String firstName, String lastName, String birthDate,
+            String address, String zipCode) {
         this.firstName = firstName;
         this.lastName = lastName;
-        try {
-            if (!TextUtils.isEmpty(birthDate)) {
-                this.birthDate = dateFormat.parse(birthDate);
-            }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        this.birthDate = birthDate;
         this.address = address;
         this.zipCode = zipCode;
     }
+
+    @Generated(hash = 782787822)
+    public Profile() {
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -55,7 +63,7 @@ public class Profile {
         return null;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -75,14 +83,7 @@ public class Profile {
         this.zipCode = zipCode;
     }
 
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthDate=" + birthDate +
-                ", address='" + address + '\'' +
-                ", zipCode='" + zipCode + '\'' +
-                '}';
+    public String getBirthDate() {
+        return this.birthDate;
     }
 }
