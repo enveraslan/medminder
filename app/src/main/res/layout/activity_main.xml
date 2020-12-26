@@ -23,13 +23,23 @@
             android:background="@color/colorBlueMunsell"
             app:setMonthColor="@color/colorAlabaster"
             android:elevation="5dp"/>
-        <TextView
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/home"
-            android:textSize="50dp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            android:layout_margin="20dp"
+            android:padding="6dp"
+            android:clipChildren="true">
+
+            <android.support.v7.widget.RecyclerView
+
+                android:id="@+id/medicine_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"/>
+
+        </FrameLayout>
+
     </LinearLayout>
     <RelativeLayout
         android:layout_width="300dp"
