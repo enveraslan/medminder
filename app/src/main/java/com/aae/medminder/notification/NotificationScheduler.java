@@ -18,7 +18,7 @@ public class NotificationScheduler {
     public static void scheduleNotification(Context context, Notification notification,int notificationId , Calendar date) {
         PendingIntent pendingIntent = createPendingIntent(context,notification,notificationId);
         AlarmManager alarmManager = getAlarmManager(context);
-        if(alarmManager!=null) alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(), pendingIntent);
+        if(alarmManager!=null) alarmManager.setExact(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(), pendingIntent);
     }
 
     public static void scheduleInexactRepeatingNotification(Context context, Notification notification,int notificationId , Calendar date, long interval) {
