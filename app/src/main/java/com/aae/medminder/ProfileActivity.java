@@ -1,8 +1,7 @@
 package com.aae.medminder;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -13,6 +12,9 @@ import com.aae.medminder.models.Profile;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class ProfileActivity extends AppCompatActivity {
     private EditText editTextFirstName;

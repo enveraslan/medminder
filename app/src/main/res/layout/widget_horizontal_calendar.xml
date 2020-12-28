@@ -37,7 +37,7 @@
 </FrameLayout>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,6 +47,5 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:layout_marginBottom="10dp"/>
-
 
 </RelativeLayout>
