@@ -14,15 +14,20 @@ public class Medicine {
     @Id(autoincrement = true)
     @Property(nameInDb = "medicineID")
     private Long medicineID;
+
     @Property(nameInDb = "barcode")
     private String barcode;
+
     @Property(nameInDb = "name")
     private String name;
+
     @Property(nameInDb = "count")
     private Long count;
+
     private String medicineUnitID;
     @ToOne(joinProperty = "medicineUnitID")
     private MedicineUnit medicineUnit;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;

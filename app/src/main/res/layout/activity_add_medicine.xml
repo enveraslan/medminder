@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:background="@color/colorAlabaster">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,50 +26,62 @@
             android:orientation="vertical"
             android:padding="35dp">
 
-            <EditText
-                android:id="@+id/medicine_name_input"
+            <TextView
+                android:id="@+id/textViewMedicineName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Medicine Name"
-                android:inputType="text" />
-
-            <Spinner
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/medicine_type_spinner"
-                android:layout_marginTop="20dp"
-                android:paddingLeft="5dp"
-                android:entries="@array/medicine_type_array"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/darker_gray"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:text="Medicine Name" />
 
             <EditText
-                android:id="@+id/dosage"
+                android:id="@+id/editTextMedicineName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="Dosage"
                 android:inputType="text" />
 
-            <Spinner
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/interval_spinner"
-                android:layout_marginTop="20dp"
-                android:paddingLeft="5dp"
-                android:entries="@array/interval_array"/>
-
-            <View
+            <TextView
+                android:id="@+id/textViewDosage"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/darker_gray"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Dosage" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/buttonDecreaseDosage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/editTextDosage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorGunMetal" />
+
+                <Button
+                    android:id="@+id/buttonIncreaseDosage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:text="+" />
+
+                <Spinner
+                    android:id="@+id/spinnerMedicineUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,16 +90,17 @@
                 android:layout_marginTop="20dp">
 
                 <EditText
-                    android:id="@+id/time_input"
+                    android:id="@+id/editTextMedicineTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="7dp"
+                    android:layout_weight="1"
+                    android:enabled="false"
                     android:hint="Time"
                     android:inputType="text" />
 
                 <Button
-                    android:id="@+id/setTimeButton"
+                    android:id="@+id/buttonSetTime"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
                     android:layout_weight="0.2"
@@ -96,94 +109,18 @@
                     android:text="Set Time"
                     android:textColor="@color/colorAlabaster" />
 
-                <Button
-                    android:id="@+id/addAnotherTimeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:background="@color/colorBlueMunsell"
-                    android:textColor="@color/colorAlabaster"
-                    android:text="Add Another Time"
-                    android:layout_weight="0.35"/>
-
-            </LinearLayout>
-
-
-
-            <Spinner
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/instructions_spinner"
-                android:layout_marginTop="20dp"
-                android:paddingLeft="5dp"
-                android:entries="@array/instruction_array"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/darker_gray"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"/>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp">
-
-                <EditText
-                    android:id="@+id/starts_from_input"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Time"
-                    android:inputType="text" />
-
-                <Button
-                    android:id="@+id/setDateButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="28dp"
-                    android:background="@color/colorBlueMunsell"
-                    android:textColor="@color/colorAlabaster"
-                    android:layout_weight="0.25"
-                    android:text="Set Date" />
             </LinearLayout>
 
             <EditText
-                android:id="@+id/remaining"
+                android:id="@+id/editTextRemaining"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="Remaining Tablet(s)"
                 android:inputType="text" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp">
-
-                <TextView
-                    android:id="@+id/reminder_text_View"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:layout_weight="1"
-                    android:textColor="#808080"
-                    android:textSize="17sp"
-                    android:text="Refill Reminder" />
-
-                <CheckBox
-                    android:id="@+id/checkBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layoutDirection="rtl"
-                    android:layout_gravity="end"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
             <Button
-                android:id="@+id/saveButton"
+                android:id="@+id/buttonSaveMedicine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

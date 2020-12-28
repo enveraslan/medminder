@@ -43,5 +43,8 @@ public class MedicineUnit {
         this.description = description;
     }
 
-
+    @Override
+    public String toString() {
+        return title;
+    }
 }
