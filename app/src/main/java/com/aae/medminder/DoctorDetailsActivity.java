@@ -69,7 +69,6 @@ public class DoctorDetailsActivity extends AppCompatActivity {
     public void clickEditDoctorButton(View view) {
         Intent intent = new Intent(this, AddDoctorActivity.class);
         intent.putExtra("doctorID", doctorID);
-
         startActivity(intent);
     }
 

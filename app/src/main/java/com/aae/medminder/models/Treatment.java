@@ -1,130 +1,147 @@
 package com.aae.medminder.models;
 
-import java.util.Date;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Property;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
+
+@Entity (nameInDb = "Treatment")
 public class Treatment {
-    private int treatmentID;
-    private int doctorID;
+    @Id (autoincrement = true)
+    private Long treatmentID;
+
     private String treatmentTypeID;
-    private Date startDate;
-    private String durationTypeID;
-    private Date endDate;
-    private int duration;
-    private String frequencyTypeID;
-    private int everyXHour;
-    private int everyXDay;
-    private Date firstIntakeTime;
-    private boolean isActive;
 
-    public Treatment(int doctorID, String treatmentTypeID, Date startDate, String durationTypeID,
-                     Date endDate, int duration, String frequencyTypeID, int everyXHour,
-                     int everyXDay, Date firstIntakeTime, boolean isActive) {
-        this.doctorID = doctorID;
+    @Property (nameInDb = "createdDate")
+    private String createdDate;
+
+    @ToOne (joinProperty = "treatmentTypeID")
+    private TreatmentType treatmentType;
+
+
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 315845799)
+    private transient TreatmentDao myDao;
+
+    @Generated(hash = 1688436796)
+    public Treatment(Long treatmentID, String treatmentTypeID, String createdDate) {
+        this.treatmentID = treatmentID;
         this.treatmentTypeID = treatmentTypeID;
-        this.startDate = startDate;
-        this.durationTypeID = durationTypeID;
-        this.endDate = endDate;
-        this.duration = duration;
-        this.frequencyTypeID = frequencyTypeID;
-        this.everyXHour = everyXHour;
-        this.everyXDay = everyXDay;
-        this.firstIntakeTime = firstIntakeTime;
-        this.isActive = isActive;
+        this.createdDate = createdDate;
     }
 
-    public int getTreatmentID() {
-        return treatmentID;
+    @Generated(hash = 852361623)
+    public Treatment() {
     }
 
-    public void setTreatmentID(int treatmentID) {
+    public Long getTreatmentID() {
+        return this.treatmentID;
+    }
+
+    public void setTreatmentID(Long treatmentID) {
         this.treatmentID = treatmentID;
     }
 
-    public int getDoctorID() {
-        return doctorID;
-    }
-
-    public void setDoctorID(int doctorID) {
-        this.doctorID = doctorID;
-    }
-
     public String getTreatmentTypeID() {
-        return treatmentTypeID;
+        return this.treatmentTypeID;
     }
 
     public void setTreatmentTypeID(String treatmentTypeID) {
         this.treatmentTypeID = treatmentTypeID;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    @Generated(hash = 218811619)
+    private transient String treatmentType__resolvedKey;
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1059791641)
+    public TreatmentType getTreatmentType() {
+        String __key = this.treatmentTypeID;
+        if (treatmentType__resolvedKey == null
+                || treatmentType__resolvedKey != __key) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TreatmentTypeDao targetDao = daoSession.getTreatmentTypeDao();
+            TreatmentType treatmentTypeNew = targetDao.load(__key);
+            synchronized (this) {
+                treatmentType = treatmentTypeNew;
+                treatmentType__resolvedKey = __key;
+            }
+        }
+        return treatmentType;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 839868019)
+    public void setTreatmentType(TreatmentType treatmentType) {
+        synchronized (this) {
+            this.treatmentType = treatmentType;
+            treatmentTypeID = treatmentType == null ? null
+                    : treatmentType.getTreatmentTypeID();
+            treatmentType__resolvedKey = treatmentTypeID;
+        }
     }
 
-    public String getDurationTypeID() {
-        return durationTypeID;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
     }
 
-    public void setDurationTypeID(String durationTypeID) {
-        this.durationTypeID = durationTypeID;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
     }
 
-    public Date getEndDate() {
-        return endDate;
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public String getCreatedDate() {
+        return this.createdDate;
     }
 
-    public int getDuration() {
-        return duration;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 527306392)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getTreatmentDao() : null;
     }
 
-    public String getFrequencyTypeID() {
-        return frequencyTypeID;
-    }
-
-    public void setFrequencyTypeID(String frequencyTypeID) {
-        this.frequencyTypeID = frequencyTypeID;
-    }
-
-    public int getEveryXHour() {
-        return everyXHour;
-    }
-
-    public void setEveryXHour(int everyXHour) {
-        this.everyXHour = everyXHour;
-    }
-
-    public int getEveryXDay() {
-        return everyXDay;
-    }
-
-    public void setEveryXDay(int everyXDay) {
-        this.everyXDay = everyXDay;
-    }
-
-    public Date getFirstIntakeTime() {
-        return firstIntakeTime;
-    }
-
-    public void setFirstIntakeTime(Date firstIntakeTime) {
-        this.firstIntakeTime = firstIntakeTime;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
+    
 }
