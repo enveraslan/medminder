@@ -10,18 +10,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.aae.medminder.models.MedicineTreatment;
+import com.aae.medminder.models.MedicineTreatmentDao;
 
 import java.util.List;
 
-public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRecyclerViewAdapter.ViewHolder> {
-
-    private List<MedicineDetail> mData;
+public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<TreatmentRecyclerViewAdapter.ViewHolder> {
+    private List<TreatmentDetail> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    MedicineRecyclerViewAdapter(Context context, List<MedicineDetail> data) {
+    TreatmentRecyclerViewAdapter(Context context, List<TreatmentDetail> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -37,7 +38,7 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        MedicineDetail detail = mData.get(position);
+        TreatmentDetail detail = mData.get(position);
 
         holder.medicineName.setText(detail.getMedicineName());
         holder.amount.setText(detail.getAmount());
@@ -63,9 +64,14 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
         LinearLayout medicineNameLayout, buttonLayout;
         RelativeLayout doseLayout, timeLayout;
         ImageView incButton, decButton;
+        Button snoozeButton, confirmButton;
 
-        ViewHolder(View itemView) {
+
+
+
+        ViewHolder(final View itemView) {
             super(itemView);
+
 
             medicineName = itemView.findViewById(R.id.MedicineName);
             amount = itemView.findViewById(R.id.amount);
@@ -79,11 +85,14 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
             incButton = itemView.findViewById(R.id.incImage);
             decButton = itemView.findViewById(R.id.decImage);
 
+            snoozeButton = itemView.findViewById(R.id.buttonMedicineSnooze);
+            confirmButton = itemView.findViewById(R.id.buttonMedicineConfirm);
+
             incButton.setOnClickListener(new View.OnClickListener(){
 
                 @Override
                 public void onClick(View v) {
-                    MedicineDetail info = mData.get(getAdapterPosition());
+                    TreatmentDetail info = mData.get(getAdapterPosition());
                     info.increaseAmount();
                     amount.setText(info.getAmount());
                 }
@@ -93,7 +102,7 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
 
                 @Override
                 public void onClick(View v) {
-                    MedicineDetail info = mData.get(getAdapterPosition());
+                    TreatmentDetail info = mData.get(getAdapterPosition());
                     info.decreaseAmount();
                     amount.setText(info.getAmount());
                 }
@@ -104,9 +113,51 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
                 @Override
                 public void onClick(View v) {
 
-                    MedicineDetail info = mData.get(getAdapterPosition());
+                    TreatmentDetail info = mData.get(getAdapterPosition());
                     info.setExpandable(!info.isExpandable());
                     notifyItemChanged(getAdapterPosition());
+                }
+            });
+
+            snoozeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TreatmentDetail info = mData.get(getAdapterPosition());
+                    try {
+                        MedicineTreatment medicineTreatment = MedminderApp.getDaoSession()
+                                .getMedicineTreatmentDao().queryBuilder()
+                                .where(MedicineTreatmentDao.Properties.MedicineTreatmentID.eq(info.getMedicineTreatmentID()))
+                                .list().get(0);
+                        medicineTreatment.setCosumeType("S");
+                        MedminderApp.getDaoSession().update(medicineTreatment);
+                    } catch (IndexOutOfBoundsException ex) {
+
+                    }
+                    mData.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                    notifyItemRangeChanged(getAdapterPosition(), mData.size());
+                    //itemView.setVisibility(View.INVISIBLE);
+                }
+            });
+
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TreatmentDetail info = mData.get(getAdapterPosition());
+                    try {
+                        MedicineTreatment medicineTreatment = MedminderApp.getDaoSession()
+                                .getMedicineTreatmentDao().queryBuilder()
+                                .where(MedicineTreatmentDao.Properties.MedicineTreatmentID.eq(info.getMedicineTreatmentID()))
+                                .list().get(0);
+                        medicineTreatment.setCosumeType("S");
+                        MedminderApp.getDaoSession().update(medicineTreatment);
+                    } catch (IndexOutOfBoundsException ex) {
+
+                    }
+                    mData.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                    notifyItemRangeChanged(getAdapterPosition(), mData.size());
+                    //itemView.setVisibility(View.INVISIBLE);
                 }
             });
         }
@@ -118,7 +169,7 @@ public class MedicineRecyclerViewAdapter extends RecyclerView.Adapter<MedicineRe
     }
 
     // convenience method for getting data at click position
-    MedicineDetail getItem(int id) {
+    TreatmentDetail getItem(int id) {
         return mData.get(id);
     }
 

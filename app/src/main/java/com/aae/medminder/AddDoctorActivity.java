@@ -105,7 +105,6 @@ public class AddDoctorActivity extends AppCompatActivity {
             doctor.setDoctorID(null);
             ((MedminderApp)getApplication()).getDaoSession().getDoctorDao().insert(doctor);
         }
-
         startActivity(new Intent(this, DoctorsActivity.class));
     }
 

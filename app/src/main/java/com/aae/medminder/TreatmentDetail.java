@@ -1,13 +1,18 @@
 package com.aae.medminder;
 
-public class MedicineDetail {
+import android.util.Log;
 
+public class TreatmentDetail {
+
+    private Long medicineTreatmentID;
     private String medicineName;
     private String amount;
     private String time;
     private boolean expandable;
+    private String treatementType;
 
-    public MedicineDetail(String medicineName, String amount, String time) {
+    public TreatmentDetail(Long treatmetID, String medicineName, String amount, String time, String treatementType) {
+        this.medicineTreatmentID = treatmetID;
         this.medicineName = medicineName;
         this.amount = amount;
         this.time = time;
@@ -54,6 +59,22 @@ public class MedicineDetail {
 
     public void setExpandable(boolean expandable) {
         this.expandable = expandable;
+    }
+
+    public Long getMedicineTreatmentID() {
+        return medicineTreatmentID;
+    }
+
+    public void setMedicineTreatmentID(Long medicineTreatmentID) {
+        this.medicineTreatmentID = medicineTreatmentID;
+    }
+
+    public String getTreatementType() {
+        return treatementType;
+    }
+
+    public void setTreatementType(String treatementType) {
+        this.treatementType = treatementType;
     }
 
     @Override
