@@ -1,19 +1,18 @@
 package com.aae.medminder;
 
-import android.util.Log;
-
 public class TreatmentDetail {
 
-    private Long medicineTreatmentID;
-    private String medicineName;
+    private Long treatmentID;
+    private String treatmentName;
     private String amount;
     private String time;
     private boolean expandable;
-    private String treatementType;
+    private String treatmentType;
 
     public TreatmentDetail(Long treatmetID, String medicineName, String amount, String time, String treatementType) {
-        this.medicineTreatmentID = treatmetID;
-        this.medicineName = medicineName;
+        this.treatmentID = treatmetID;
+        this.treatmentName = medicineName;
+        this.treatmentType = treatementType;
         this.amount = amount;
         this.time = time;
         this.expandable = false;
@@ -29,12 +28,12 @@ public class TreatmentDetail {
             this.amount = String.valueOf(Integer.parseInt(this.amount) - 1);
     }
 
-    public String getMedicineName() {
-        return medicineName;
+    public String getTreatmentName() {
+        return treatmentName;
     }
 
-    public void setMedicineName(String medicineName) {
-        this.medicineName = medicineName;
+    public void setTreatmentName(String treatmentName) {
+        this.treatmentName = treatmentName;
     }
 
     public String getAmount() {
@@ -61,26 +60,26 @@ public class TreatmentDetail {
         this.expandable = expandable;
     }
 
-    public Long getMedicineTreatmentID() {
-        return medicineTreatmentID;
+    public Long getTreatmentID() {
+        return treatmentID;
     }
 
-    public void setMedicineTreatmentID(Long medicineTreatmentID) {
-        this.medicineTreatmentID = medicineTreatmentID;
+    public void setTreatmentID(Long treatmentID) {
+        this.treatmentID = treatmentID;
     }
 
-    public String getTreatementType() {
-        return treatementType;
+    public String getTreatmentType() {
+        return treatmentType;
     }
 
-    public void setTreatementType(String treatementType) {
-        this.treatementType = treatementType;
+    public void setTreatmentType(String treatmentType) {
+        this.treatmentType = treatmentType;
     }
 
     @Override
     public String toString() {
         return "MedicineInfo{" +
-                "medicineName='" + medicineName + '\'' +
+                "medicineName='" + treatmentName + '\'' +
                 ", amount='" + amount + '\'' +
                 ", time='" + time + '\'' +
                 ", expandable=" + expandable +

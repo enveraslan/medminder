@@ -37,12 +37,12 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editTexMeasurementTime"
+                android:id="@+id/editTextMeasurementTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="7dp"
                 android:layout_weight="1"
-                android:hint="Time"
+                android:text="06:30"
                 android:inputType="text" />
 
             <Button
