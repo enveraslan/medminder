@@ -20,19 +20,18 @@
         android:padding="35dp">
 
         <EditText
-            android:id="@+id/appointment_title_input"
+            android:id="@+id/editTextAppointmentTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Appointment Title"
             android:inputType="text" />
 
-        <EditText
-            android:id="@+id/select_doctor_input"
+        <Spinner
+            android:id="@+id/spinnerDoctor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Select Doctor"
-            android:inputType="text" />
+            android:hint="Select Doctor" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +40,7 @@
             android:layout_marginTop="20dp">
 
             <EditText
-                android:id="@+id/date_input"
+                android:id="@+id/editTextAppointmentDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -58,12 +57,10 @@
                 android:background="@color/colorBlueMunsell"
                 android:text="Set Date"
                 android:textColor="@color/colorAlabaster" />
-
-
         </LinearLayout>
 
         <EditText
-            android:id="@+id/location_input"
+            android:id="@+id/editTextLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -71,7 +68,7 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/add_notes_input"
+            android:id="@+id/editTextNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -95,7 +92,7 @@
                 android:text="Add Reminder" />
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/checkBoxIsReminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layoutDirection="rtl"
@@ -107,7 +104,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonSaveAppointment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
