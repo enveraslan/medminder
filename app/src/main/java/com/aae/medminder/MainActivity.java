@@ -10,6 +10,10 @@ import android.widget.Toast;
 import com.aae.medminder.components.calendar.CustomHorizontalCalendar;
 import com.aae.medminder.components.calendar.OnHorizontalDateSelectListener;
 import com.aae.medminder.components.calendar.model.DateModel;
+import com.aae.medminder.models.MeasurementTreatment;
+import com.aae.medminder.models.MeasurementTreatmentDao;
+import com.aae.medminder.models.MeasurementType;
+import com.aae.medminder.models.MeasurementTypeDao;
 import com.aae.medminder.models.Medicine;
 import com.aae.medminder.models.MedicineDao;
 import com.aae.medminder.models.MedicineTreatment;
@@ -31,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends AppCompatActivity implements OnHorizontalDateSelectListener, TreatmentRecyclerViewAdapter.ItemClickListener {
     // Initialize variable
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
-    private ArrayList<TreatmentDetail> medicineList = new ArrayList<>();
+    private ArrayList<TreatmentDetail> treatmentList = new ArrayList<>();
     DrawerLayout drawerLayout;
     private CustomHorizontalCalendar mCalendar;
     RecyclerView medicineRecyclerView;
@@ -55,19 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
         calendar.add(Calendar.DAY_OF_MONTH, 45);
         mCalendar.selectDate(Calendar.getInstance().getTime());
         getTreatments(sdf.format(mCalendar.getCurrentDate()));
-
-
-//
-//
-//        medicineList.add(new TreatmentDetail("Aspirin", "1", "01:30"));
-//        medicineList.add(new TreatmentDetail("Syrup", "2", "05:45"));
-//        medicineList.add(new TreatmentDetail("PainKiller", "3", "19:00"));
-//        medicineList.add(new TreatmentDetail("Injection", "1", "01:30"));
-//        medicineList.add(new TreatmentDetail("Inhaler", "2", "05:45"));
-//        medicineList.add(new TreatmentDetail("Tablet", "3", "19:00"));
-
-
-
     }
 
     public void ClickMenu(View view) {
@@ -139,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     }
 
     public void getTreatments(String date) {
-        medicineList = new ArrayList<TreatmentDetail>();
+        treatmentList = new ArrayList<TreatmentDetail>();
 
         List<Treatment> treatments =((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().loadAll();
 
@@ -148,8 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
                 Treatment treatment = treatments.get(i);
                 if(treatment.getTreatmentTypeID().equals("MED")) {
 
-
-                    List<MedicineTreatment> medicineTreatments = ((MedminderApp)getApplication())
+                    List<MedicineTreatment> medicineTreatments = MedminderApp
                             .getDaoSession().getMedicineTreatmentDao().queryBuilder()
                             .where(MedicineTreatmentDao.Properties.TreatmentID.eq(treatment.getTreatmentID()))
                             .where(MedicineTreatmentDao.Properties.Date.eq(date))
@@ -163,12 +153,32 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
                                 .getDaoSession().getMedicineDao().queryBuilder()
                                 .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
                                 .list();
-                        medicineList.add(new TreatmentDetail(medicineTreatment.getMedicineTreatmentID(),
+                        treatmentList.add(new TreatmentDetail(medicineTreatment.getMedicineTreatmentID(),
                                 medicines.get(0).getName(),
                                 medicineTreatment.getDosage().toString(),  medicineTreatment.getTime(), "MED"));
                     }
 
 
+                }
+                else if (treatment.getTreatmentTypeID().equals("MEA")) {
+                    List<MeasurementTreatment> measurementTreatments = MedminderApp.getDaoSession()
+                            .getMeasurementTreatmentDao().queryBuilder()
+                            .where(MeasurementTreatmentDao.Properties.TreatmentID.eq(treatment.getTreatmentID()))
+                            .where(MeasurementTreatmentDao.Properties.Date.eq(date))
+                            .where(MeasurementTreatmentDao.Properties.Measured.eq("N"))
+                            .orderAsc(MeasurementTreatmentDao.Properties.Time)
+                            .list();
+
+                    for(int j = 0; j < measurementTreatments.size(); j++) {
+                        MeasurementTreatment measurementTreatment = measurementTreatments.get(j);
+                        List<MeasurementType> measurementTypes = ((MedminderApp)getApplication())
+                                .getDaoSession().getMeasurementTypeDao().queryBuilder()
+                                .where(MeasurementTypeDao.Properties.MeasurementTypeID.eq(measurementTreatment.getMeasurementTypeID()))
+                                .list();
+                        treatmentList.add(new TreatmentDetail(measurementTreatment.getMeasurementTreatmentID(),
+                                measurementTypes.get(0).getTitle(),
+                                "0",  measurementTreatment.getTime(), "MEA"));
+                    }
                 }
 
 
@@ -178,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
         }
 
         medicineRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new TreatmentRecyclerViewAdapter(context, medicineList);
+        adapter = new TreatmentRecyclerViewAdapter(context, treatmentList);
         adapter.setClickListener(this);
         medicineRecyclerView.setAdapter(adapter);
     }

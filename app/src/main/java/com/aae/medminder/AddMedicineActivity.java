@@ -17,8 +17,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.aae.medminder.models.Doctor;
-import com.aae.medminder.models.DoctorDao;
 import com.aae.medminder.models.Medicine;
 import com.aae.medminder.models.MedicineDao;
 import com.aae.medminder.models.MedicineTreatment;
@@ -152,9 +150,9 @@ public class AddMedicineActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
 
             } else {
-                Toast.makeText(parent.getContext(),
-                        "You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(parent.getContext(),
+                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
+                        //Toast.LENGTH_LONG).show();
                 // Todo when item is selected by the user
             }
         }

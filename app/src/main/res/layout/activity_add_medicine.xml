@@ -96,7 +96,7 @@
                     android:layout_marginEnd="7dp"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="Time"
+                    android:text="06:30"
                     android:inputType="text" />
 
                 <Button

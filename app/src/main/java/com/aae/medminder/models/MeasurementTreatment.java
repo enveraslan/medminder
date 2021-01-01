@@ -26,8 +26,15 @@ public class MeasurementTreatment {
     private Long value;
 
     private String measurementTypeID;
+
     @ToOne(joinProperty = "measurementTypeID")
     private MeasurementType measurementType;
+
+    @Property (nameInDb = "measured")
+    private String measured;
+    
+    @Property (nameInDb = "time")
+    private String time;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -36,50 +43,83 @@ public class MeasurementTreatment {
     /** Used for active entity operations. */
     @Generated(hash = 1554646681)
     private transient MeasurementTreatmentDao myDao;
-    @Generated(hash = 1278070568)
+
+    @Generated(hash = 1283761343)
     public MeasurementTreatment(Long measurementTreatmentID, Long treatmentID,
-            String date, Long value, String measurementTypeID) {
+            String date, Long value, String measurementTypeID, String measured,
+            String time) {
         this.measurementTreatmentID = measurementTreatmentID;
         this.treatmentID = treatmentID;
         this.date = date;
         this.value = value;
         this.measurementTypeID = measurementTypeID;
+        this.measured = measured;
+        this.time = time;
     }
+
     @Generated(hash = 69334444)
     public MeasurementTreatment() {
     }
+
     public Long getMeasurementTreatmentID() {
         return this.measurementTreatmentID;
     }
+
     public void setMeasurementTreatmentID(Long measurementTreatmentID) {
         this.measurementTreatmentID = measurementTreatmentID;
     }
+
     public Long getTreatmentID() {
         return this.treatmentID;
     }
+
     public void setTreatmentID(Long treatmentID) {
         this.treatmentID = treatmentID;
     }
+
     public String getDate() {
         return this.date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
+
     public Long getValue() {
         return this.value;
     }
+
     public void setValue(Long value) {
         this.value = value;
     }
+
     public String getMeasurementTypeID() {
         return this.measurementTypeID;
     }
+
     public void setMeasurementTypeID(String measurementTypeID) {
         this.measurementTypeID = measurementTypeID;
     }
+
+    public String getMeasured() {
+        return this.measured;
+    }
+
+    public void setMeasured(String measured) {
+        this.measured = measured;
+    }
+
+    public String getTime() {
+        return this.time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     @Generated(hash = 427483173)
     private transient Long treatment__resolvedKey;
+
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 104875332)
     public Treatment getTreatment() {
@@ -99,6 +139,7 @@ public class MeasurementTreatment {
         }
         return treatment;
     }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1980563665)
     public void setTreatment(Treatment treatment) {
@@ -108,8 +149,10 @@ public class MeasurementTreatment {
             treatment__resolvedKey = treatmentID;
         }
     }
+
     @Generated(hash = 1224394782)
     private transient String measurementType__resolvedKey;
+
     /** To-one relationship, resolved on first access. */
     @Generated(hash = 31255922)
     public MeasurementType getMeasurementType() {
@@ -129,6 +172,7 @@ public class MeasurementTreatment {
         }
         return measurementType;
     }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1039260195)
     public void setMeasurementType(MeasurementType measurementType) {
@@ -139,6 +183,7 @@ public class MeasurementTreatment {
             measurementType__resolvedKey = measurementTypeID;
         }
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -150,6 +195,7 @@ public class MeasurementTreatment {
         }
         myDao.delete(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -161,6 +207,7 @@ public class MeasurementTreatment {
         }
         myDao.refresh(this);
     }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -172,12 +219,14 @@ public class MeasurementTreatment {
         }
         myDao.update(this);
     }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 33943822)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMeasurementTreatmentDao() : null;
     }
+
 
 
 }

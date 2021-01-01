@@ -1,5 +1,7 @@
 package com.aae.medminder.models;
 
+import androidx.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
@@ -44,8 +46,8 @@ public class MeasurementType {
         this.unit = unit;
     }
 
-
-
-
-
+    @Override
+    public String toString() {
+        return title;
+    }
 }
