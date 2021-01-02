@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MainTreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TreatmentDetail> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
@@ -41,7 +41,7 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private static int TYPE_MEASUREMENT = 2;
 
     // data is passed into the constructor
-    TreatmentRecyclerViewAdapter(Context context, List<TreatmentDetail> data) {
+    MainTreatmentRecyclerViewAdapter(Context context, List<TreatmentDetail> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -217,7 +217,6 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                     mData.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
                     notifyItemRangeChanged(getAdapterPosition(), mData.size());
-                    //itemView.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -230,15 +229,22 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                                 .getMedicineTreatmentDao().queryBuilder()
                                 .where(MedicineTreatmentDao.Properties.MedicineTreatmentID.eq(info.getTreatmentID()))
                                 .list().get(0);
-                        medicineTreatment.setCosumeType("S");
+                        medicineTreatment.setCosumeType("C");
+                        medicineTreatment.setConsumedDosage(Long.valueOf(amount.getText().toString()));
                         MedminderApp.getDaoSession().update(medicineTreatment);
+
+
+                        Medicine medicine = MedminderApp.getDaoSession().getMedicineDao().queryBuilder()
+                                .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
+                                .list().get(0);
+                        medicine.setCount(medicine.getCount() - Long.valueOf(amount.getText().toString()));
+                        MedminderApp.getDaoSession().update(medicine);
                     } catch (IndexOutOfBoundsException ex) {
 
                     }
                     mData.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
                     notifyItemRangeChanged(getAdapterPosition(), mData.size());
-                    //itemView.setVisibility(View.INVISIBLE);
                 }
             });
         }
