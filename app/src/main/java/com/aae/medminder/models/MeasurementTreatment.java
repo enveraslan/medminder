@@ -9,68 +9,64 @@ import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
-@Entity (nameInDb = "MedicineTreatment")
-public class MedicineTreatment {
-    @Id (autoincrement = true)
-    private Long medicineTreatmentID;
+@Entity (nameInDb = "MeasurementTreatment")
+public class MeasurementTreatment {
+    @Id
+    private Long measurementTreatmentID;
 
     private Long treatmentID;
 
-    @ToOne (joinProperty = "treatmentID")
+    @ToOne(joinProperty = "treatmentID")
     private Treatment treatment;
-
-    @Property(nameInDb = "time")
-    private String time;
 
     @Property(nameInDb = "date")
     private String date;
 
-    private Long medicineID;
+    @Property (nameInDb = "value")
+    private Long value;
 
-    @ToOne (joinProperty = "medicineID")
-    private Medicine medicine;
+    private String measurementTypeID;
 
-    @Property (nameInDb = "dosage")
-    private Long dosage;
+    @ToOne(joinProperty = "measurementTypeID")
+    private MeasurementType measurementType;
 
-    @Property (nameInDb = "consumedDosage")
-    private Long consumedDosage;
-
-    @Property (nameInDb = "consumeType")
-    private String cosumeType;
+    @Property (nameInDb = "measured")
+    private String measured;
+    
+    @Property (nameInDb = "time")
+    private String time;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    @Generated(hash = 457411753)
-    private transient MedicineTreatmentDao myDao;
+    @Generated(hash = 1554646681)
+    private transient MeasurementTreatmentDao myDao;
 
-    @Generated(hash = 128962405)
-    public MedicineTreatment(Long medicineTreatmentID, Long treatmentID,
-            String time, String date, Long medicineID, Long dosage,
-            Long consumedDosage, String cosumeType) {
-        this.medicineTreatmentID = medicineTreatmentID;
+    @Generated(hash = 1283761343)
+    public MeasurementTreatment(Long measurementTreatmentID, Long treatmentID,
+            String date, Long value, String measurementTypeID, String measured,
+            String time) {
+        this.measurementTreatmentID = measurementTreatmentID;
         this.treatmentID = treatmentID;
-        this.time = time;
         this.date = date;
-        this.medicineID = medicineID;
-        this.dosage = dosage;
-        this.consumedDosage = consumedDosage;
-        this.cosumeType = cosumeType;
+        this.value = value;
+        this.measurementTypeID = measurementTypeID;
+        this.measured = measured;
+        this.time = time;
     }
 
-    @Generated(hash = 249418594)
-    public MedicineTreatment() {
+    @Generated(hash = 69334444)
+    public MeasurementTreatment() {
     }
 
-    public Long getMedicineTreatmentID() {
-        return this.medicineTreatmentID;
+    public Long getMeasurementTreatmentID() {
+        return this.measurementTreatmentID;
     }
 
-    public void setMedicineTreatmentID(Long medicineTreatmentID) {
-        this.medicineTreatmentID = medicineTreatmentID;
+    public void setMeasurementTreatmentID(Long measurementTreatmentID) {
+        this.measurementTreatmentID = measurementTreatmentID;
     }
 
     public Long getTreatmentID() {
@@ -81,14 +77,6 @@ public class MedicineTreatment {
         this.treatmentID = treatmentID;
     }
 
-    public String getTime() {
-        return this.time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public String getDate() {
         return this.date;
     }
@@ -97,36 +85,36 @@ public class MedicineTreatment {
         this.date = date;
     }
 
-    public Long getMedicineID() {
-        return this.medicineID;
+    public Long getValue() {
+        return this.value;
     }
 
-    public void setMedicineID(Long medicineID) {
-        this.medicineID = medicineID;
+    public void setValue(Long value) {
+        this.value = value;
     }
 
-    public Long getDosage() {
-        return this.dosage;
+    public String getMeasurementTypeID() {
+        return this.measurementTypeID;
     }
 
-    public void setDosage(Long dosage) {
-        this.dosage = dosage;
+    public void setMeasurementTypeID(String measurementTypeID) {
+        this.measurementTypeID = measurementTypeID;
     }
 
-    public Long getConsumedDosage() {
-        return this.consumedDosage;
+    public String getMeasured() {
+        return this.measured;
     }
 
-    public void setConsumedDosage(Long consumedDosage) {
-        this.consumedDosage = consumedDosage;
+    public void setMeasured(String measured) {
+        this.measured = measured;
     }
 
-    public String getCosumeType() {
-        return this.cosumeType;
+    public String getTime() {
+        return this.time;
     }
 
-    public void setCosumeType(String cosumeType) {
-        this.cosumeType = cosumeType;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     @Generated(hash = 427483173)
@@ -162,35 +150,37 @@ public class MedicineTreatment {
         }
     }
 
-    @Generated(hash = 1842101333)
-    private transient Long medicine__resolvedKey;
+    @Generated(hash = 1224394782)
+    private transient String measurementType__resolvedKey;
 
     /** To-one relationship, resolved on first access. */
-    @Generated(hash = 791122259)
-    public Medicine getMedicine() {
-        Long __key = this.medicineID;
-        if (medicine__resolvedKey == null || !medicine__resolvedKey.equals(__key)) {
+    @Generated(hash = 31255922)
+    public MeasurementType getMeasurementType() {
+        String __key = this.measurementTypeID;
+        if (measurementType__resolvedKey == null
+                || measurementType__resolvedKey != __key) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            MedicineDao targetDao = daoSession.getMedicineDao();
-            Medicine medicineNew = targetDao.load(__key);
+            MeasurementTypeDao targetDao = daoSession.getMeasurementTypeDao();
+            MeasurementType measurementTypeNew = targetDao.load(__key);
             synchronized (this) {
-                medicine = medicineNew;
-                medicine__resolvedKey = __key;
+                measurementType = measurementTypeNew;
+                measurementType__resolvedKey = __key;
             }
         }
-        return medicine;
+        return measurementType;
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1261703337)
-    public void setMedicine(Medicine medicine) {
+    @Generated(hash = 1039260195)
+    public void setMeasurementType(MeasurementType measurementType) {
         synchronized (this) {
-            this.medicine = medicine;
-            medicineID = medicine == null ? null : medicine.getMedicineID();
-            medicine__resolvedKey = medicineID;
+            this.measurementType = measurementType;
+            measurementTypeID = measurementType == null ? null
+                    : measurementType.getMeasurementTypeID();
+            measurementType__resolvedKey = measurementTypeID;
         }
     }
 
@@ -231,10 +221,10 @@ public class MedicineTreatment {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 880567551)
+    @Generated(hash = 33943822)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getMedicineTreatmentDao() : null;
+        myDao = daoSession != null ? daoSession.getMeasurementTreatmentDao() : null;
     }
 
 

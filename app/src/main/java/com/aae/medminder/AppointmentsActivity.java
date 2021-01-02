@@ -1,17 +1,33 @@
 package com.aae.medminder;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
-public class AppointmentsActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.aae.medminder.models.Appointment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AppointmentsActivity extends AppCompatActivity implements AppointmentRecyclerViewAdapter.ItemClickListener {
+    private RecyclerView recyclerViewAppointment;
+    private List<Appointment> appointments;
+    private AppointmentRecyclerViewAdapter adapter;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointments);
+
+        context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Appointments");
@@ -24,10 +40,31 @@ public class AppointmentsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        init();
+    }
+
+    private void init() {
+        // set up the RecyclerView
+        appointments = MedminderApp.getDaoSession().getAppointmentDao().loadAll();
+        recyclerViewAppointment = findViewById(R.id.appointments_recycler_view);
+        recyclerViewAppointment.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new AppointmentRecyclerViewAdapter(this, appointments);
+        adapter.setClickListener(this);
+        recyclerViewAppointment.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        //Toast.makeText(this, "You clicked " + adapter.getItem(position). + " on row number " + position, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, AddAppointmentActivity.class);
+        intent.putExtra("appointmentID", adapter.getItem(position).getAppointmentID());
+        finish();
+        startActivity(intent);
     }
 
     public void ClickAddAppointment(View view) {
-
+        finish();
         startActivity(new Intent(this, AddAppointmentActivity.class));
     }
 }

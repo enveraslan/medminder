@@ -3,9 +3,6 @@ package com.aae.medminder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +13,10 @@ import android.widget.TextView;
 import com.aae.medminder.models.Doctor;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class DoctorRecyclerViewAdapter extends RecyclerView.Adapter<DoctorRecyclerViewAdapter.Holder> {
     private ArrayList<Doctor> doctors;
@@ -42,7 +43,7 @@ public class DoctorRecyclerViewAdapter extends RecyclerView.Adapter<DoctorRecycl
         phone = doctors.get(position).getPhoneNumber();
         email = doctors.get(position).getEmail();
         location = doctors.get(position).getLocation();
-        holder.textViewDoctorName.setText(fullName);
+        holder.textViewDoctorName.setText("DR. " + fullName);
         holder.textViewDoctorPhone.setText(phone);
         final long doctorID = doctors.get(position).getDoctorID();
         holder.doctorsLayout.setOnClickListener(new View.OnClickListener() {

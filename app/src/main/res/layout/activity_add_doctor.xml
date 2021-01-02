@@ -7,97 +7,106 @@
 
     <include layout="@layout/toolbar" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/colorAlabaster"
-        android:padding="35dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textViewDoctorFirstName"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="First Name" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorAlabaster"
+            android:padding="35dp">
 
-        <EditText
-            android:id="@+id/editTextDoctorFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
+            <TextView
+                android:id="@+id/textViewDoctorFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="First Name" />
 
-
-        <TextView
-            android:id="@+id/textViewDoctorLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Last Name" />
-
-        <EditText
-            android:id="@+id/editTextDoctorLastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
-
-        <TextView
-            android:id="@+id/textViewDoctorPhoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Phone Number" />
-
-        <EditText
-            android:id="@+id/editTextDoctorPhoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone" />
-
-        <TextView
-            android:id="@+id/textViewDoctorEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Email" />
-
-        <EditText
-            android:id="@+id/editTextDoctorEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
-
-        <TextView
-            android:id="@+id/textViewDoctorLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Location" />
-        <EditText
-            android:id="@+id/editTextDoctorLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/buttonSaveDoctor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Save Doctor"
-            android:textColor="@color/colorAlabaster"
-            android:background="@color/colorBlueMunsell"/>
-
-        <Button
-            android:id="@+id/buttonDeleteDoctor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorCinnebar"
-            android:text="Delete Doctor"
-            android:textColor="@color/colorBabyPowder" />
+            <EditText
+                android:id="@+id/editTextDoctorFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
 
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textViewDoctorLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Last Name" />
+
+            <EditText
+                android:id="@+id/editTextDoctorLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/textViewDoctorPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Phone Number" />
+
+            <EditText
+                android:id="@+id/editTextDoctorPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
+
+            <TextView
+                android:id="@+id/textViewDoctorEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Email" />
+
+            <EditText
+                android:id="@+id/editTextDoctorEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/textViewDoctorLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Location" />
+            <EditText
+                android:id="@+id/editTextDoctorLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/buttonSaveDoctor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Save Doctor"
+                android:textColor="@color/colorAlabaster"
+                android:background="@color/colorBlueMunsell"/>
+
+            <Button
+                android:id="@+id/buttonDeleteDoctor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorCinnebar"
+                android:text="Delete Doctor"
+                android:textColor="@color/colorBabyPowder" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
 
 </LinearLayout>
 

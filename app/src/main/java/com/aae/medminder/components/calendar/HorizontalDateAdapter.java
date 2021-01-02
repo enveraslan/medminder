@@ -2,8 +2,6 @@ package com.aae.medminder.components.calendar;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +14,9 @@ import com.aae.medminder.components.calendar.model.DateModel;
 
 
 import java.util.List;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by SahanaB on 09/09/18.

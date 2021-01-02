@@ -1,72 +1,94 @@
 package com.aae.medminder;
 
-import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.aae.medminder.models.Medicine;
+import com.aae.medminder.models.MedicineDao;
+import com.aae.medminder.models.MedicineTreatment;
+import com.aae.medminder.models.MedicineTreatmentDao;
+import com.aae.medminder.models.MedicineUnit;
+import com.aae.medminder.models.Treatment;
+import com.aae.medminder.models.TreatmentDao;
+import com.aae.medminder.models.TreatmentType;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class AddMedicineActivity extends AppCompatActivity {
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+    private EditText editTextMedicineName;
+    private TextView editTextDosage;
+    private EditText editTextRemaining;
+    private Spinner spinnerMedicineUnit;
+    private EditText editTextTime;
+    private Button buttonSetTime;
+    private Button buttonSaveMedicine;
+    private Button buttonDecreaseDosage;
+    private Button buttonIncreaseDosage;
+    private Button buttonDeleteMedicine;
+    private Long dosage = Long.valueOf(1);
+    private Long treatmentId;
+    private Long medicineId;
 
-    private Spinner medicineTypeSpinner;
-    private Spinner intervalSpinner;
-    private Spinner instructionsSpinner;
-
-    private EditText timeInput;
-    private Button setTimeButton;
-    private Button setDateButton;
-    private EditText startsFromInput;
     Context context = this;
 
-    private int mYear, mMonth, mDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medicine);
+        treatmentId = getIntent().getLongExtra("treatmentId", 0);
 
-        medicineTypeSpinner = findViewById(R.id.medicine_type_spinner);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.medicine_type_array, R.layout.spinner_item);
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        medicineTypeSpinner.setAdapter(adapter);
-        medicineTypeSpinner.setOnItemSelectedListener(new medicineItemSelectedListener());
+        //TEST
+        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
+        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
 
-        intervalSpinner = findViewById(R.id.interval_spinner);
-        ArrayAdapter adapter1 = ArrayAdapter.createFromResource(this, R.array.interval_array, R.layout.spinner_item);
-        adapter1.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        intervalSpinner.setAdapter(adapter1);
-        intervalSpinner.setOnItemSelectedListener(new intervalItemSelectedListener());
 
-        instructionsSpinner = findViewById(R.id.instructions_spinner);
-        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(this, R.array.instruction_array, R.layout.spinner_item);
-        adapter2.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        instructionsSpinner.setAdapter(adapter2);
-        instructionsSpinner.setOnItemSelectedListener(new instructionsItemSelectedListener());
+        editTextMedicineName = findViewById(R.id.editTextMedicineName);
+        editTextDosage = findViewById(R.id.editTextDosage);
+        editTextRemaining = findViewById(R.id.editTextRemaining);
+        spinnerMedicineUnit = findViewById(R.id.spinnerMedicineUnit);
+        editTextTime = findViewById(R.id.editTextMedicineTime);
+        buttonSetTime = findViewById(R.id.buttonSetTime);
+        buttonSaveMedicine = findViewById(R.id.buttonSaveMedicine);
+        buttonDeleteMedicine = findViewById(R.id.buttonDeleteMedicine);
+        buttonDecreaseDosage = findViewById(R.id.buttonDecreaseDosage);
+        buttonIncreaseDosage = findViewById(R.id.buttonIncreaseDosage);
 
-        timeInput = findViewById(R.id.time_input);
-        setTimeButton = findViewById(R.id.setTimeButton);
-        setTimeButton.setOnClickListener(new View.OnClickListener()
+        List<MedicineUnit> medicineUnits =  new ArrayList<MedicineUnit>(((MedminderApp)getApplication()).getDaoSession().getMedicineUnitDao().loadAll());
+        ArrayAdapter<MedicineUnit> adapterMedicineUnit = new ArrayAdapter<MedicineUnit>(this, android.R.layout.simple_spinner_item, medicineUnits);
+        adapterMedicineUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMedicineUnit.setAdapter(adapterMedicineUnit);
+        spinnerMedicineUnit.setOnItemSelectedListener(new medicineItemSelectedListener());
+
+        buttonSetTime.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 final Calendar calendar = Calendar.getInstance();
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                final int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
                 TimePickerDialog tpd = new TimePickerDialog(context,
@@ -74,43 +96,15 @@ public class AddMedicineActivity extends AppCompatActivity {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                timeInput.setText(hourOfDay + ":" + minute);
+                                String hS = (hourOfDay < 10 || hourOfDay == 24) ? "0" + hourOfDay : Integer.toString(hourOfDay);
+                                String mS = (minute < 10 || minute == 60) ? "0" + minute : Integer.toString(minute);
+                                editTextTime.setText(hS + ":" + mS);
                             }
                         }, hour, minute, true);
                 tpd.setButton(TimePickerDialog.BUTTON_POSITIVE, "Choose", tpd);
                 tpd.setButton(TimePickerDialog.BUTTON_NEGATIVE, "Cancel", tpd);
 
                 tpd.show();
-            }
-        });
-
-        setDateButton= findViewById(R.id.setDateButton);
-        startsFromInput = findViewById(R.id.starts_from_input);
-
-        setDateButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // Get Current Date
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(context,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                startsFromInput.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
             }
         });
 
@@ -126,24 +120,56 @@ public class AddMedicineActivity extends AppCompatActivity {
             }
         });
 
+        if(treatmentId > 0){
+            buttonDeleteMedicine.setVisibility(View.VISIBLE);
+            toolbar.setTitle("Edit Medicine");
+            setMedicine(treatmentId);
+        }
+
+        buttonSaveMedicine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveMedicine();
+            }
+        });
+
+        buttonIncreaseDosage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dosage++;
+                editTextDosage.setText(dosage.toString());
+            }
+        });
+
+        buttonDecreaseDosage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dosage > 1) {
+                    dosage--;
+                }
+                editTextDosage.setText(dosage.toString());
+            }
+        });
+
+
 
     }
 
     public class medicineItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         //get strings of first item
-        String firstItem = String.valueOf(medicineTypeSpinner.getSelectedItem());
+        String firstItem = String.valueOf(spinnerMedicineUnit.getSelectedItem());
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-            if (firstItem.equals(String.valueOf(medicineTypeSpinner.getSelectedItem()))) {
+            if (firstItem.equals(String.valueOf(spinnerMedicineUnit.getSelectedItem()))) {
                 // ToDo when first item is selected
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
 
             } else {
-                Toast.makeText(parent.getContext(),
-                        "You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(parent.getContext(),
+                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
+                        //Toast.LENGTH_LONG).show();
                 // Todo when item is selected by the user
             }
         }
@@ -155,55 +181,141 @@ public class AddMedicineActivity extends AppCompatActivity {
 
     }
 
-    public class intervalItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    private void saveMedicine() {
 
-        //get strings of first item
-        String firstItem = String.valueOf(intervalSpinner.getSelectedItem());
+        Treatment treatment = new Treatment();
+        treatment.setTreatmentID(null);
+        treatment.setTreatmentType(new TreatmentType("MED", "Medicine"));
+        Calendar createdDate = Calendar.getInstance();
+        treatment.setCreatedDate(createdDate.getTime().toString());
 
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        Medicine medicine = new Medicine();
+        medicine.setMedicineID(null);
+        medicine.setBarcode(null);
+        medicine.setName(editTextMedicineName.getText().toString());
+        Long remaining =  TextUtils.isEmpty(editTextRemaining.getText().toString()) ? Long.valueOf(0)  : Long.valueOf(editTextRemaining.getText().toString());
+        medicine.setCount(remaining);
+        medicine.setMedicineUnit(((MedicineUnit)spinnerMedicineUnit.getSelectedItem()));
 
-            if (firstItem.equals(String.valueOf(intervalSpinner.getSelectedItem()))) {
-                // ToDo when first item is selected
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
+        //Update
+            try {
 
-            } else {
-                Toast.makeText(parent.getContext(),
-                        "You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
+                //Update
+                if(treatmentId > 0){
+                    UpdateMedicine();
+                }
+                //Insert
+                else
+                {
+                    MedminderApp.getDaoSession().getTreatmentDao().insert(treatment);
+                    MedminderApp.getDaoSession().getMedicineDao().insert(medicine);
+
+                    List<Treatment> treatmentQuery = ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().queryBuilder()
+                            .where(TreatmentDao.Properties.TreatmentTypeID.eq("MED"))
+                            .where(TreatmentDao.Properties.CreatedDate.eq(createdDate.getTime().toString()))
+                            .list();
+
+                    List<Medicine> medicineQuery = ((MedminderApp)getApplication()).getDaoSession().getMedicineDao().queryBuilder()
+                            .where(MedicineDao.Properties.Name.eq(editTextMedicineName.getText().toString()))
+                            .list();
+
+                    Calendar date = Calendar.getInstance();
+                    medicine.setMedicineID(medicineQuery.get(0).getMedicineID());
+                    treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
+
+                    for(int i = 0; i < 30; i++) {
+                        InsertMedicine(treatment, medicine, date);
+                    }
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                Log.e("MedicineOperation", ex.getMessage());
             }
-        }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> arg) {
 
-        }
-
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
-    public class instructionsItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    private void InsertMedicine(Treatment treatment, Medicine medicine, Calendar date) {
 
-        //get strings of first item
-        String firstItem = String.valueOf(instructionsSpinner.getSelectedItem());
+        MedicineTreatment medicineTreatment = new MedicineTreatment();
+        medicineTreatment.setMedicineTreatmentID(null);
+        medicineTreatment.setConsumedDosage(null);
+        medicineTreatment.setTreatment(treatment);
+        medicineTreatment.setMedicine(medicine);
+        medicineTreatment.setDosage(dosage);
+        medicineTreatment.setCosumeType("N");
+        medicineTreatment.setTime(editTextTime.getText().toString());
+        medicineTreatment.setDate(sdf.format(date.getTime()));
+        MedminderApp.getDaoSession().getMedicineTreatmentDao().insert(medicineTreatment);
+        date.add(Calendar.DAY_OF_MONTH, 1);
+    }
+    private void UpdateMedicine() {
+        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
+        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
 
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        String updateQueryMedicineTreatment = String.format("update " + MedicineTreatmentDao.TABLENAME + " set "
+                + MedicineTreatmentDao.Properties.Time.columnName + " = '%s',"
+                + MedicineTreatmentDao.Properties.Dosage.columnName + " = %d"
+                + " where " + MedicineTreatmentDao.Properties.TreatmentID.columnName + " = %d", editTextTime.getText().toString(), dosage, treatmentId);
 
-            if (firstItem.equals(String.valueOf(instructionsSpinner.getSelectedItem()))) {
-                // ToDo when first item is selected
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
+        String updateQueryTreatment = String.format("update " + MedicineDao.TABLENAME + " set "
+                        + MedicineDao.Properties.MedicineUnitID.columnName + " = '%s', "
+                        + MedicineDao.Properties.Name.columnName + " = '%s', "
+                        + MedicineDao.Properties.Count.columnName + " = %d"
+                        + " where " + MedicineDao.Properties.MedicineID.columnName + " = %d",
+                ((MedicineUnit) spinnerMedicineUnit.getSelectedItem()).getMedicineUnitID(),
+                editTextMedicineName.getText().toString(),
+                TextUtils.isEmpty(editTextRemaining.getText().toString()) ? Long.valueOf(0) : Long.valueOf(editTextRemaining.getText().toString()),
+                medicineId);
 
-            } else {
-                Toast.makeText(parent.getContext(),
-                        "You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
+        MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
+
+        MedminderApp.UpdateSession();
+    }
+
+    private void setMedicine(long treatmentId){
+
+       // Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
+
+        List<Treatment> treatments = MedminderApp
+                .getDaoSession().getTreatmentDao().queryBuilder()
+                .where(TreatmentDao.Properties.TreatmentID.eq(treatmentId))
+                .list();
+
+        List<MedicineTreatment> medicineTreatments = MedminderApp
+                .getDaoSession().getMedicineTreatmentDao().queryBuilder()
+                .where(MedicineTreatmentDao.Properties.TreatmentID.eq(treatmentId))
+                .list();
+
+
+        if(medicineTreatments.size() > 0){
+            MedicineTreatment medicineTreatment = medicineTreatments.get(0);
+            medicineId = medicineTreatment.getMedicineID();
+            Medicine medicine =  MedminderApp
+                    .getDaoSession().getMedicineDao().queryBuilder()
+                    .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
+                    .list().get(0);
+
+            editTextMedicineName.setText(medicine.getName());
+            editTextDosage.setText(medicineTreatment.getDosage().toString());
+            dosage = medicineTreatment.getDosage();
+            Toast.makeText(context, String.valueOf(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle())), Toast.LENGTH_LONG).show();
+            spinnerMedicineUnit.setSelection(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle()));
+            editTextTime.setText(medicineTreatment.getTime());
+            editTextRemaining.setText(medicine.getCount().toString());
+        }
+
+
+    }
+    private int getIndex(Spinner spinner, String myString){
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (myString.equals(spinner.getItemAtPosition(i).toString())){
+                return i;
             }
         }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> arg) {
-
-        }
-
+        return 0;
     }
 }

@@ -5,7 +5,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:id="@+id/doctorsLayout">
+    android:id="@+id/treatmentLayout">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageViewDoctorRow"
+                android:id="@+id/imageViewTreatment"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="16dp"
@@ -29,7 +29,7 @@
                 app:srcCompat="@drawable/ic_person_24" />
 
             <TextView
-                android:id="@+id/textViewDoctorRowName"
+                android:id="@+id/textViewTreatmentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -37,13 +37,13 @@
                 android:text="TextView"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/imageViewDoctorRow"
+                app:layout_constraintStart_toEndOf="@+id/imageViewTreatment"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_editor_absoluteX="95dp"
                 app:layout_editor_absoluteY="16dp" />
 
             <TextView
-                android:id="@+id/textViewDoctorRowPhoneNumber"
+                android:id="@+id/textViewTreatmentSubdetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -52,8 +52,8 @@
                 android:text="TextView"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageViewDoctorRow"
-                app:layout_constraintTop_toBottomOf="@+id/textViewDoctorRowName"
+                app:layout_constraintStart_toEndOf="@+id/imageViewTreatment"
+                app:layout_constraintTop_toBottomOf="@+id/textViewTreatmentName"
                 app:layout_constraintVertical_bias="0.111" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
