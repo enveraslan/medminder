@@ -43,7 +43,7 @@ public class DoctorRecyclerViewAdapter extends RecyclerView.Adapter<DoctorRecycl
         phone = doctors.get(position).getPhoneNumber();
         email = doctors.get(position).getEmail();
         location = doctors.get(position).getLocation();
-        holder.textViewDoctorName.setText(fullName);
+        holder.textViewDoctorName.setText("DR. " + fullName);
         holder.textViewDoctorPhone.setText(phone);
         final long doctorID = doctors.get(position).getDoctorID();
         holder.doctorsLayout.setOnClickListener(new View.OnClickListener() {

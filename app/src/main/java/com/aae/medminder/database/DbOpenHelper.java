@@ -21,6 +21,7 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
     public void onCreate(SQLiteDatabase db) {
         super.onCreate(db);
         db.execSQL("INSERT INTO Profile VALUES('', '', '', '', '')");
+        db.execSQL("INSERT INTO Doctor(firstName, lastName) VALUES('Please select a doctor,', 'if any.')");
         insertMedicineUnit(db);
         insertTreatmentType(db);
         insertMeasuretmentType(db);
