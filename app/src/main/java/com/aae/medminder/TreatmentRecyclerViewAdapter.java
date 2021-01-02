@@ -91,9 +91,7 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                             .list().get(0);
                     ((ViewHolderMedicine) viewHolder).medicineUnit.setText(medicineUnit.getTitle());
 
-                }catch (IndexOutOfBoundsException ex) {
-
-                }
+                }catch (IndexOutOfBoundsException ex) {}
 
                 ((ViewHolderMedicine) viewHolder).medicineName.setText(detail.getTreatmentName());
                 ((ViewHolderMedicine) viewHolder).amount.setText(detail.getAmount());
@@ -152,12 +150,8 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         ImageView incButton, decButton;
         Button snoozeButton, confirmButton;
 
-
-
-
         ViewHolderMedicine(final View itemView) {
             super(itemView);
-
 
             medicineName = itemView.findViewById(R.id.MedicineName);
             amount = itemView.findViewById(R.id.amount);
@@ -264,9 +258,6 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         RelativeLayout timeLayout;
         Button snoozeButton, confirmButton;
 
-
-
-
         ViewHolderMeasurement(final View itemView) {
             super(itemView);
 
@@ -290,9 +281,6 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                     notifyItemChanged(getAdapterPosition());
                 }
             });
-
-
-
         }
 
         @Override

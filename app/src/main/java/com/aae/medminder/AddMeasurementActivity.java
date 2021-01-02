@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaMetadata;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.aae.medminder.models.MeasurementTreatment;
+import com.aae.medminder.models.MeasurementTreatmentDao;
 import com.aae.medminder.models.MeasurementType;
 import com.aae.medminder.models.MeasurementTypeDao;
 import com.aae.medminder.models.MedicineUnit;
@@ -40,6 +42,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
     private EditText editTextMeasurementTime;
     private Button buttonSetMeasurementTime;
     private Button buttonSaveMeasurement;
+    private Button buttonDeleteMeasurement;
+    private long measurementId;
 
     private Context context = this;
 
@@ -47,6 +51,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_measurement);
+        measurementId = getIntent().getLongExtra("treatmentId", 0);
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle("Add Measurement");
@@ -58,6 +63,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         editTextMeasurementTime = findViewById(R.id.editTextMeasurementTime);
         buttonSetMeasurementTime = findViewById(R.id.buttonSetMeasurementTime);
         buttonSaveMeasurement = findViewById(R.id.buttonSaveMeasurement);
+        buttonDeleteMeasurement = findViewById(R.id.buttonDeleteMeasurement);
 
         buttonSetMeasurementTime.setOnClickListener(new View.OnClickListener()
         {
@@ -91,6 +97,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
         adapterMeasurementType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMeasurement.setAdapter(adapterMeasurementType);
         spinnerMeasurement.setOnItemSelectedListener(new measurementItemSelectedListener());
+
+        if(measurementId > 0){
+            buttonDeleteMeasurement.setVisibility(View.VISIBLE);
+            mToolbar.setTitle("Edit Measurement");
+            setMeasurement(measurementId);
+        }
 
         buttonSaveMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +141,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
 
     private void saveMeasurement() {
-
-
         Treatment treatment = new Treatment();
         treatment.setTreatmentID(null);
         treatment.setTreatmentType(new TreatmentType("MEA", "Measurement"));
@@ -164,12 +174,43 @@ public class AddMeasurementActivity extends AppCompatActivity {
             }
 
 
-        }catch (IndexOutOfBoundsException ex) {
-
-        }
+        }catch (IndexOutOfBoundsException ex) {}
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
 
+    }
+
+    private void setMeasurement(long treatmentId){
+        Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
+
+        List<MeasurementTreatment> measurementTreatments = MedminderApp.getDaoSession()
+                .getMeasurementTreatmentDao().queryBuilder()
+                .where(MeasurementTreatmentDao.Properties.TreatmentID.eq(treatmentId))
+                .where(MeasurementTreatmentDao.Properties.Measured.eq("N"))
+                .orderAsc(MeasurementTreatmentDao.Properties.Time)
+                .list();
+
+        if(measurementTreatments.size() > 0){
+            MeasurementTreatment measurementTreatment = measurementTreatments.get(0);
+            MeasurementType measurementType = MedminderApp
+                    .getDaoSession().getMeasurementTypeDao().queryBuilder()
+                    .where(MeasurementTypeDao.Properties.MeasurementTypeID.eq(measurementTreatment.getMeasurementTypeID()))
+                    .list().get(0);
+            Toast.makeText(context, measurementTreatment.getMeasurementType().getTitle().toString(), Toast.LENGTH_LONG).show();
+            spinnerMeasurement.setSelection(getIndex(spinnerMeasurement, measurementTreatment.getMeasurementType().getTitle()));
+            editTextMeasurementTime.setText(measurementTreatment.getTime());
+        }
+
+    }
+
+    private int getIndex(Spinner spinner, String myString){
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (myString.equals(spinner.getItemAtPosition(i).toString())){
+                return i;
+            }
+        }
+        return 0;
     }
 }

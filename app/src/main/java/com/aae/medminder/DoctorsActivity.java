@@ -30,20 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class DoctorsActivity extends AppCompatActivity {
 
-
-
-    private DatabaseHelper helper = new DatabaseHelper(this);
-    private SQLiteDatabase db;
-    private Cursor cursor;
-
     private RecyclerView recyclerViewDoctors;
-
-    private Long doctorID;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String email;
-    private String location;
 
     private ArrayList<Doctor> doctors;
 
@@ -59,7 +46,6 @@ public class DoctorsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         init();
-
 
     }
 

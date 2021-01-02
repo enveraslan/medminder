@@ -127,6 +127,15 @@
                 android:textColor="@color/colorAlabaster"
                 android:background="@color/colorBlueMunsell"
                 android:text="Save" />
+            <Button
+                android:id="@+id/buttonDeleteMedicine"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorCinnebar"
+                android:text="Delete Medicine"
+                android:textColor="@color/colorBabyPowder" />
 
         </LinearLayout>
 
