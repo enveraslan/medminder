@@ -217,7 +217,6 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                     mData.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
                     notifyItemRangeChanged(getAdapterPosition(), mData.size());
-                    //itemView.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -230,15 +229,22 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                                 .getMedicineTreatmentDao().queryBuilder()
                                 .where(MedicineTreatmentDao.Properties.MedicineTreatmentID.eq(info.getTreatmentID()))
                                 .list().get(0);
-                        medicineTreatment.setCosumeType("S");
+                        medicineTreatment.setCosumeType("C");
+                        medicineTreatment.setConsumedDosage(Long.valueOf(amount.getText().toString()));
                         MedminderApp.getDaoSession().update(medicineTreatment);
+
+
+                        Medicine medicine = MedminderApp.getDaoSession().getMedicineDao().queryBuilder()
+                                .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
+                                .list().get(0);
+                        medicine.setCount(medicine.getCount() - Long.valueOf(amount.getText().toString()));
+                        MedminderApp.getDaoSession().update(medicine);
                     } catch (IndexOutOfBoundsException ex) {
 
                     }
                     mData.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
                     notifyItemRangeChanged(getAdapterPosition(), mData.size());
-                    //itemView.setVisibility(View.INVISIBLE);
                 }
             });
         }
