@@ -1,12 +1,12 @@
 package com.aae.medminder;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,13 +15,10 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,8 +28,7 @@ import com.aae.medminder.models.Appointment;
 import com.aae.medminder.models.AppointmentDao;
 import com.aae.medminder.models.Doctor;
 import com.aae.medminder.models.DoctorDao;
-
-import org.greenrobot.greendao.annotation.Index;
+import com.aae.medminder.notification.NotificationScheduler;
 
 public class AddAppointmentActivity extends AppCompatActivity {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
@@ -48,6 +44,7 @@ public class AddAppointmentActivity extends AppCompatActivity {
     private Button buttonSetTime;
     private Button deleteButton;
     private int mYear, mMonth, mDay;
+    private Calendar calendar = null;
     Context context = this;
 
     private Long appointmentID;
@@ -112,7 +109,6 @@ public class AddAppointmentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                final Calendar calendar = Calendar.getInstance();
                 final int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
@@ -140,10 +136,9 @@ public class AddAppointmentActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 // Get Current Date
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
+                mYear = calendar.get(Calendar.YEAR);
+                mMonth = calendar.get(Calendar.MONTH);
+                mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(context,
@@ -152,11 +147,10 @@ public class AddAppointmentActivity extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                Calendar c = Calendar.getInstance();
-                                c.set(Calendar.YEAR, year);
-                                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                c.set(Calendar.MONTH, monthOfYear);
-                                dateInput.setText(sdf.format(c.getTime()));
+                                calendar.set(Calendar.YEAR, year);
+                                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                dateInput.setText(sdf.format(calendar.getTime()));
 
                             }
                         }, mYear, mMonth, mDay);
@@ -181,7 +175,7 @@ public class AddAppointmentActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteDoctor();
+                deleteAppointment();
             }
         });
 
@@ -241,6 +235,32 @@ public class AddAppointmentActivity extends AppCompatActivity {
             MedminderApp.getDaoSession().getAppointmentDao().insert(appointment);
         }
 
+        if(checkBoxIsReminder.isChecked()){
+            if(appointment.getAppointmentID() == 0){
+                appointment = MedminderApp.getDaoSession().getAppointmentDao().queryBuilder()
+                        .orderDesc(AppointmentDao.Properties.AppointmentID)
+                        .list().get(0);
+            }
+
+            Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                    "Medminder",
+                    "Don't forget your appointment ! ",
+                    R.drawable.ac_appointment_notification_small,
+                    R.drawable.ac_appointment_notification_big,
+                    MainActivity.class);
+
+            calendar.add(Calendar.HOUR,-2);
+            NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                    notification,
+                    (1000 + appointment.getAppointmentID().intValue()),
+                    calendar,
+                    AlarmManager.INTERVAL_DAY);
+
+        }
+        else if(appointment.getAppointmentID() != null){
+            NotificationScheduler.cancelNotification(getApplicationContext(), (1000 + appointment.getAppointmentID().intValue()));
+        }
+
         finish();
         startActivity(new Intent(this, AppointmentsActivity.class));
 
@@ -255,8 +275,9 @@ public class AddAppointmentActivity extends AppCompatActivity {
         return 0;
     }
 
-    private void deleteDoctor() {
+    private void deleteAppointment() {
         MedminderApp.getDaoSession().getAppointmentDao().deleteByKey(appointmentID);
+        NotificationScheduler.cancelNotification(getApplicationContext(), 1000 + appointmentID.intValue());
         finish();
         startActivity(new Intent(this, AppointmentsActivity.class));
     }

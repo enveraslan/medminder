@@ -1,5 +1,8 @@
 package com.aae.medminder;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +28,7 @@ import com.aae.medminder.models.MedicineUnit;
 import com.aae.medminder.models.Treatment;
 import com.aae.medminder.models.TreatmentDao;
 import com.aae.medminder.models.TreatmentType;
+import com.aae.medminder.notification.NotificationScheduler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private Long dosage = Long.valueOf(1);
     private Long treatmentId;
     private Long medicineId;
+    private Calendar calendar = null;
 
     Context context = this;
 
@@ -86,7 +91,7 @@ public class AddMedicineActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                final Calendar calendar = Calendar.getInstance();
+                calendar = Calendar.getInstance();
                 final int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
@@ -98,6 +103,8 @@ public class AddMedicineActivity extends AppCompatActivity {
                                 String hS = (hourOfDay < 10 || hourOfDay == 24) ? "0" + hourOfDay : Integer.toString(hourOfDay);
                                 String mS = (minute < 10 || minute == 60) ? "0" + minute : Integer.toString(minute);
                                 editTextTime.setText(hS + ":" + mS);
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
                             }
                         }, hour, minute, true);
                 tpd.setButton(TimePickerDialog.BUTTON_POSITIVE, "Choose", tpd);
@@ -232,7 +239,19 @@ public class AddMedicineActivity extends AppCompatActivity {
             } catch (IndexOutOfBoundsException ex) {
                 Log.e("MedicineOperation", ex.getMessage());
             }
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to consume "+medicine.getName(),
+                R.drawable.ac_pill2,
+                R.drawable.ac_pill,
+                MainActivity.class);
 
+            calendar.add(Calendar.MINUTE,-5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatment.getTreatmentID().toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
@@ -270,8 +289,21 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
-
         MedminderApp.updateSession();
+
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to consume "+editTextMedicineName.getText().toString(),
+                R.drawable.ac_pill2,
+                R.drawable.ac_pill,
+                MainActivity.class);
+        calendar.add(Calendar.MINUTE, -5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatmentId.toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
+
     }
 
     private void deleteMedicine(){
@@ -289,6 +321,8 @@ public class AddMedicineActivity extends AppCompatActivity {
         MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicine);
 
         MedminderApp.updateSession();
+
+        NotificationScheduler.cancelNotification(getApplicationContext(), Integer.parseInt(treatmentId.toString()));
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
