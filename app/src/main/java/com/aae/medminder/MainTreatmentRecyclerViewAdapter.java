@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MainTreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TreatmentDetail> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
@@ -41,7 +41,7 @@ public class TreatmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private static int TYPE_MEASUREMENT = 2;
 
     // data is passed into the constructor
-    TreatmentRecyclerViewAdapter(Context context, List<TreatmentDetail> data) {
+    MainTreatmentRecyclerViewAdapter(Context context, List<TreatmentDetail> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }

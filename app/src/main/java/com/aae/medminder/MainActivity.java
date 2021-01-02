@@ -32,7 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MainActivity extends AppCompatActivity implements OnHorizontalDateSelectListener, TreatmentRecyclerViewAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements OnHorizontalDateSelectListener, MainTreatmentRecyclerViewAdapter.ItemClickListener {
     // Initialize variable
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
     private ArrayList<TreatmentDetail> treatmentList = new ArrayList<>();
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     private CustomHorizontalCalendar mCalendar;
     RecyclerView medicineRecyclerView;
 
-    TreatmentRecyclerViewAdapter adapter;
+    MainTreatmentRecyclerViewAdapter adapter;
     Context context = this;
 
     @ Override
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
         }
 
         medicineRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new TreatmentRecyclerViewAdapter(context, treatmentList);
+        adapter = new MainTreatmentRecyclerViewAdapter(context, treatmentList);
         adapter.setClickListener(this);
         medicineRecyclerView.setAdapter(adapter);
     }
