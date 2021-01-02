@@ -64,7 +64,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
         List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
 
-
         editTextMedicineName = findViewById(R.id.editTextMedicineName);
         editTextDosage = findViewById(R.id.editTextDosage);
         editTextRemaining = findViewById(R.id.editTextRemaining);
@@ -151,8 +150,12 @@ public class AddMedicineActivity extends AppCompatActivity {
             }
         });
 
-
-
+        buttonDeleteMedicine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteMedicine();
+            }
+        });
     }
 
     public class medicineItemSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -199,7 +202,6 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         //Update
             try {
-
                 //Update
                 if(treatmentId > 0){
                     UpdateMedicine();
@@ -224,7 +226,7 @@ public class AddMedicineActivity extends AppCompatActivity {
                     treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
 
                     for(int i = 0; i < 30; i++) {
-                        InsertMedicine(treatment, medicine, date);
+                        InsertMedicineTreatment(treatment, medicine, date);
                     }
                 }
             } catch (IndexOutOfBoundsException ex) {
@@ -236,7 +238,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void InsertMedicine(Treatment treatment, Medicine medicine, Calendar date) {
+    private void InsertMedicineTreatment(Treatment treatment, Medicine medicine, Calendar date) {
 
         MedicineTreatment medicineTreatment = new MedicineTreatment();
         medicineTreatment.setMedicineTreatmentID(null);
@@ -251,9 +253,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         date.add(Calendar.DAY_OF_MONTH, 1);
     }
     private void UpdateMedicine() {
-        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
-        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
-
         String updateQueryMedicineTreatment = String.format("update " + MedicineTreatmentDao.TABLENAME + " set "
                 + MedicineTreatmentDao.Properties.Time.columnName + " = '%s',"
                 + MedicineTreatmentDao.Properties.Dosage.columnName + " = %d"
@@ -272,7 +271,27 @@ public class AddMedicineActivity extends AppCompatActivity {
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
 
-        MedminderApp.UpdateSession();
+        MedminderApp.updateSession();
+    }
+
+    private void deleteMedicine(){
+        String deleteTreatment = String.format("delete from " + TreatmentDao.TABLENAME +
+                " where " + TreatmentDao.Properties.TreatmentID.columnName + " = %d", treatmentId);
+
+        String deleteMedicineTreatment = String.format("delete from " + MedicineTreatmentDao.TABLENAME
+                + " where " + MedicineTreatmentDao.Properties.TreatmentID.columnName + " = %d", treatmentId);
+
+        String deleteMedicine = String.format("delete from " + MedicineDao.TABLENAME
+                + " where " + MedicineDao.Properties.MedicineID.columnName + " = %d", medicineId);
+
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicineTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicine);
+
+        MedminderApp.updateSession();
+
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void setMedicine(long treatmentId){
@@ -288,7 +307,6 @@ public class AddMedicineActivity extends AppCompatActivity {
                 .getDaoSession().getMedicineTreatmentDao().queryBuilder()
                 .where(MedicineTreatmentDao.Properties.TreatmentID.eq(treatmentId))
                 .list();
-
 
         if(medicineTreatments.size() > 0){
             MedicineTreatment medicineTreatment = medicineTreatments.get(0);
@@ -306,8 +324,6 @@ public class AddMedicineActivity extends AppCompatActivity {
             editTextTime.setText(medicineTreatment.getTime());
             editTextRemaining.setText(medicine.getCount().toString());
         }
-
-
     }
     private int getIndex(Spinner spinner, String myString){
 
