@@ -81,6 +81,15 @@
             android:background="@color/colorBlueMunsell"
             android:text="Save"
             android:textColor="@color/colorAlabaster" />
+        <Button
+            android:id="@+id/buttonDeleteMeasurement"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorCinnebar"
+            android:text="Delete Measurement"
+            android:textColor="@color/colorBabyPowder" />
 
     </LinearLayout>
 

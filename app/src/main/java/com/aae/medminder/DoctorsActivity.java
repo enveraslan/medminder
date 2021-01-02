@@ -48,7 +48,6 @@ public class DoctorsActivity extends AppCompatActivity {
 
         init();
 
-
     }
 
     private void init() {

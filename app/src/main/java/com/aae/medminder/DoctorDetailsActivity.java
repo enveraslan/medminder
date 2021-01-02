@@ -62,7 +62,6 @@ public class DoctorDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void clickEditDoctorButton(View view) {

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.aae.medminder.models.Medicine;
 import com.aae.medminder.models.MedicineDao;
 import com.aae.medminder.models.MedicineTreatment;
+import com.aae.medminder.models.MedicineTreatmentDao;
 import com.aae.medminder.models.MedicineUnit;
 import com.aae.medminder.models.Treatment;
 import com.aae.medminder.models.TreatmentDao;
@@ -44,7 +45,10 @@ public class AddMedicineActivity extends AppCompatActivity {
     private Button buttonSaveMedicine;
     private Button buttonDecreaseDosage;
     private Button buttonIncreaseDosage;
+    private Button buttonDeleteMedicine;
     private Long dosage = Long.valueOf(1);
+    private Long treatmentId;
+    private Long medicineId;
 
     Context context = this;
 
@@ -54,6 +58,12 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medicine);
+        treatmentId = getIntent().getLongExtra("treatmentId", 0);
+
+        //TEST
+        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
+        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
+
 
         editTextMedicineName = findViewById(R.id.editTextMedicineName);
         editTextDosage = findViewById(R.id.editTextDosage);
@@ -62,6 +72,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         editTextTime = findViewById(R.id.editTextMedicineTime);
         buttonSetTime = findViewById(R.id.buttonSetTime);
         buttonSaveMedicine = findViewById(R.id.buttonSaveMedicine);
+        buttonDeleteMedicine = findViewById(R.id.buttonDeleteMedicine);
         buttonDecreaseDosage = findViewById(R.id.buttonDecreaseDosage);
         buttonIncreaseDosage = findViewById(R.id.buttonIncreaseDosage);
 
@@ -109,6 +120,11 @@ public class AddMedicineActivity extends AppCompatActivity {
             }
         });
 
+        if(treatmentId > 0){
+            buttonDeleteMedicine.setVisibility(View.VISIBLE);
+            toolbar.setTitle("Edit Medicine");
+            setMedicine(treatmentId);
+        }
 
         buttonSaveMedicine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +150,7 @@ public class AddMedicineActivity extends AppCompatActivity {
                 editTextDosage.setText(dosage.toString());
             }
         });
+
 
 
     }
@@ -180,48 +197,125 @@ public class AddMedicineActivity extends AppCompatActivity {
         medicine.setCount(remaining);
         medicine.setMedicineUnit(((MedicineUnit)spinnerMedicineUnit.getSelectedItem()));
 
-        ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().insert(treatment);
-        ((MedminderApp)getApplication()).getDaoSession().getMedicineDao().insert(medicine);
+        //Update
+            try {
 
+                //Update
+                if(treatmentId > 0){
+                    UpdateMedicine();
+                }
+                //Insert
+                else
+                {
+                    MedminderApp.getDaoSession().getTreatmentDao().insert(treatment);
+                    MedminderApp.getDaoSession().getMedicineDao().insert(medicine);
 
+                    List<Treatment> treatmentQuery = ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().queryBuilder()
+                            .where(TreatmentDao.Properties.TreatmentTypeID.eq("MED"))
+                            .where(TreatmentDao.Properties.CreatedDate.eq(createdDate.getTime().toString()))
+                            .list();
 
-        List<Treatment> treatmentQuery = ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().queryBuilder()
-                .where(TreatmentDao.Properties.TreatmentTypeID.eq("MED"))
-                .where(TreatmentDao.Properties.CreatedDate.eq(createdDate.getTime().toString()))
-                .list();
+                    List<Medicine> medicineQuery = ((MedminderApp)getApplication()).getDaoSession().getMedicineDao().queryBuilder()
+                            .where(MedicineDao.Properties.Name.eq(editTextMedicineName.getText().toString()))
+                            .list();
 
-        List<Medicine> medicineQuery = ((MedminderApp)getApplication()).getDaoSession().getMedicineDao().queryBuilder()
-                .where(MedicineDao.Properties.Name.eq(editTextMedicineName.getText().toString()))
-                .list();
+                    Calendar date = Calendar.getInstance();
+                    medicine.setMedicineID(medicineQuery.get(0).getMedicineID());
+                    treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
 
-        try {
-            Calendar date = Calendar.getInstance();
-
-            medicine.setMedicineID(medicineQuery.get(0).getMedicineID());
-            treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
-
-
-            for(int i = 0; i < 30; i++) {
-                MedicineTreatment medicineTreatment = new MedicineTreatment();
-                medicineTreatment.setMedicineTreatmentID(null);
-                medicineTreatment.setConsumedDosage(null);
-                medicineTreatment.setTreatment(treatment);
-                medicineTreatment.setMedicine(medicine);
-                medicineTreatment.setDosage(dosage);
-                medicineTreatment.setCosumeType("N");
-                medicineTreatment.setTime(editTextTime.getText().toString());
-                medicineTreatment.setDate(sdf.format(date.getTime()));
-                ((MedminderApp)getApplication()).getDaoSession().getMedicineTreatmentDao().insert(medicineTreatment);
-                Log.d("Date", medicineTreatment.getDate());
-                date.add(Calendar.DAY_OF_MONTH, 1);
+                    for(int i = 0; i < 30; i++) {
+                        InsertMedicine(treatment, medicine, date);
+                    }
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                Log.e("MedicineOperation", ex.getMessage());
             }
-        } catch (IndexOutOfBoundsException ex) {
 
-        }
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void InsertMedicine(Treatment treatment, Medicine medicine, Calendar date) {
+
+        MedicineTreatment medicineTreatment = new MedicineTreatment();
+        medicineTreatment.setMedicineTreatmentID(null);
+        medicineTreatment.setConsumedDosage(null);
+        medicineTreatment.setTreatment(treatment);
+        medicineTreatment.setMedicine(medicine);
+        medicineTreatment.setDosage(dosage);
+        medicineTreatment.setCosumeType("N");
+        medicineTreatment.setTime(editTextTime.getText().toString());
+        medicineTreatment.setDate(sdf.format(date.getTime()));
+        MedminderApp.getDaoSession().getMedicineTreatmentDao().insert(medicineTreatment);
+        date.add(Calendar.DAY_OF_MONTH, 1);
+    }
+    private void UpdateMedicine() {
+        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
+        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
+
+        String updateQueryMedicineTreatment = String.format("update " + MedicineTreatmentDao.TABLENAME + " set "
+                + MedicineTreatmentDao.Properties.Time.columnName + " = '%s',"
+                + MedicineTreatmentDao.Properties.Dosage.columnName + " = %d"
+                + " where " + MedicineTreatmentDao.Properties.TreatmentID.columnName + " = %d", editTextTime.getText().toString(), dosage, treatmentId);
+
+        String updateQueryTreatment = String.format("update " + MedicineDao.TABLENAME + " set "
+                        + MedicineDao.Properties.MedicineUnitID.columnName + " = '%s', "
+                        + MedicineDao.Properties.Name.columnName + " = '%s', "
+                        + MedicineDao.Properties.Count.columnName + " = %d"
+                        + " where " + MedicineDao.Properties.MedicineID.columnName + " = %d",
+                ((MedicineUnit) spinnerMedicineUnit.getSelectedItem()).getMedicineUnitID(),
+                editTextMedicineName.getText().toString(),
+                TextUtils.isEmpty(editTextRemaining.getText().toString()) ? Long.valueOf(0) : Long.valueOf(editTextRemaining.getText().toString()),
+                medicineId);
+
+        MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
+
+        MedminderApp.UpdateSession();
+    }
+
+    private void setMedicine(long treatmentId){
+
+       // Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
+
+        List<Treatment> treatments = MedminderApp
+                .getDaoSession().getTreatmentDao().queryBuilder()
+                .where(TreatmentDao.Properties.TreatmentID.eq(treatmentId))
+                .list();
+
+        List<MedicineTreatment> medicineTreatments = MedminderApp
+                .getDaoSession().getMedicineTreatmentDao().queryBuilder()
+                .where(MedicineTreatmentDao.Properties.TreatmentID.eq(treatmentId))
+                .list();
 
 
+        if(medicineTreatments.size() > 0){
+            MedicineTreatment medicineTreatment = medicineTreatments.get(0);
+            medicineId = medicineTreatment.getMedicineID();
+            Medicine medicine =  MedminderApp
+                    .getDaoSession().getMedicineDao().queryBuilder()
+                    .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
+                    .list().get(0);
+
+            editTextMedicineName.setText(medicine.getName());
+            editTextDosage.setText(medicineTreatment.getDosage().toString());
+            dosage = medicineTreatment.getDosage();
+            Toast.makeText(context, String.valueOf(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle())), Toast.LENGTH_LONG).show();
+            spinnerMedicineUnit.setSelection(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle()));
+            editTextTime.setText(medicineTreatment.getTime());
+            editTextRemaining.setText(medicine.getCount().toString());
+        }
+
+
+    }
+    private int getIndex(Spinner spinner, String myString){
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (myString.equals(spinner.getItemAtPosition(i).toString())){
+                return i;
+            }
+        }
+        return 0;
     }
 }
