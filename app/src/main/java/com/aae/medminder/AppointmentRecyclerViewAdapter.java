@@ -9,18 +9,22 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aae.medminder.models.Appointment;
+import com.aae.medminder.models.Doctor;
+import com.aae.medminder.models.DoctorDao;
+
 import java.util.List;
 
 public class AppointmentRecyclerViewAdapter extends RecyclerView.Adapter<AppointmentRecyclerViewAdapter.ViewHolder> {
 
-    private List<AppointmentDetail> mData;
+    private List<Appointment> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
 
 
     // data is passed into the constructor
-    AppointmentRecyclerViewAdapter(Context context, List<AppointmentDetail> data) {
+    AppointmentRecyclerViewAdapter(Context context, List<Appointment> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -41,12 +45,24 @@ public class AppointmentRecyclerViewAdapter extends RecyclerView.Adapter<Appoint
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        AppointmentDetail appointment = mData.get(position);
-        holder.titleTxt.setText(appointment.getDoctor());
-        holder.hospitalTxt.setText(appointment.getHospital());
+        Appointment appointment = mData.get(position);
+        try {
+            Doctor doctor = MedminderApp.getDaoSession().getDoctorDao().queryBuilder()
+                    .where(DoctorDao.Properties.DoctorID.eq(appointment.getDoctorID()))
+                    .list().get(0);
+            if(appointment.getDoctorID() == 1L) {
+                holder.titleTxt.setText("-");
+            } else {
+                holder.titleTxt.setText("Dr." + doctor.toString());
+            }
+        } catch (IndexOutOfBoundsException ex) {
+
+        }
+
+        holder.specialtyTxt.setText(appointment.getTitle());
         holder.dateTxt.setText(appointment.getDate());
-        holder.specialtyTxt.setText(appointment.getSpecialty());
         holder.timeTxt.setText(appointment.getTime());
+        holder.hospitalTxt.setText(appointment.getLocation());
 
     }
 
@@ -90,7 +106,7 @@ public class AppointmentRecyclerViewAdapter extends RecyclerView.Adapter<Appoint
     }
 
     // convenience method for getting data at click position
-    AppointmentDetail getItem(int id) {
+    Appointment getItem(int id) {
         return mData.get(id);
     }
 

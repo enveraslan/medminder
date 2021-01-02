@@ -1,5 +1,6 @@
 package com.aae.medminder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,15 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aae.medminder.models.Appointment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppointmentsActivity extends AppCompatActivity implements AppointmentRecyclerViewAdapter.ItemClickListener {
-
-    AppointmentRecyclerViewAdapter adapter;
+    private RecyclerView recyclerViewAppointment;
+    private List<Appointment> appointments;
+    private AppointmentRecyclerViewAdapter adapter;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointments);
+
+        context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Appointments");
@@ -35,32 +41,30 @@ public class AppointmentsActivity extends AppCompatActivity implements Appointme
             }
         });
 
+        init();
+    }
 
-        ArrayList<AppointmentDetail> appointments = new ArrayList<>();
-        appointments.add(new AppointmentDetail("Dr. Enver Altay", "Sunnetci" ,"Goztepe", "01.02.2021", "00:30"));
-        appointments.add(new AppointmentDetail("Dr. Abdullah Aslan", "Urologist" ,"Findikli", "28.01.2021", "10:45"));
-        appointments.add(new AppointmentDetail("Dr. Anil Gulcur", "Cardiologist", "Maltepe", "21.04.2021", "15:00"));
-        appointments.add(new AppointmentDetail("Dr. Enver Altay", "Sunnetci" ,"Goztepe", "01.02.2021", "00:30"));
-        appointments.add(new AppointmentDetail("Dr. Abdullah Aslan", "Urologist" ,"Findikli", "28.01.2021", "10:45"));
-        appointments.add(new AppointmentDetail("Dr. Anil Gulcur", "Cardiologist", "Maltepe", "21.04.2021", "15:00"));
-
+    private void init() {
         // set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.appointments_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        appointments = MedminderApp.getDaoSession().getAppointmentDao().loadAll();
+        recyclerViewAppointment = findViewById(R.id.appointments_recycler_view);
+        recyclerViewAppointment.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AppointmentRecyclerViewAdapter(this, appointments);
         adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        recyclerViewAppointment.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-
-        startActivity(new Intent(this, AddAppointmentActivity.class));
+        //Toast.makeText(this, "You clicked " + adapter.getItem(position). + " on row number " + position, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, AddAppointmentActivity.class);
+        intent.putExtra("appointmentID", adapter.getItem(position).getAppointmentID());
+        finish();
+        startActivity(intent);
     }
 
     public void ClickAddAppointment(View view) {
-
+        finish();
         startActivity(new Intent(this, AddAppointmentActivity.class));
     }
 }

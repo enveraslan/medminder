@@ -13,6 +13,10 @@
         android:layout_alignParentStart="true"
         android:theme="@style/ToolbarStyle" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -57,6 +61,33 @@
                 android:background="@color/colorBlueMunsell"
                 android:text="Set Date"
                 android:textColor="@color/colorAlabaster" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <EditText
+                android:id="@+id/editTextAppointmentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="7dp"
+                android:layout_weight="1"
+                android:text="06:30"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/buttonSetTime"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_weight="0.2"
+                android:layout_marginEnd="7dp"
+                android:background="@color/colorBlueMunsell"
+                android:text="Set Time"
+                android:textColor="@color/colorAlabaster" />
+
         </LinearLayout>
 
         <EditText
@@ -111,7 +142,15 @@
             android:textColor="@color/colorAlabaster"
             android:background="@color/colorBlueMunsell"
             android:text="Save" />
+        <Button
+            android:id="@+id/buttonDeleteAppointment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorCinnebar"
+            android:text="Delete"
+            android:textColor="@color/colorBabyPowder" />
 
     </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>

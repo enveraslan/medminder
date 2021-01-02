@@ -24,6 +24,9 @@ public class Appointment{
     @Property (nameInDb = "date")
     private String date;
 
+    @Property (nameInDb = "time")
+    private String time;
+
     @Property (nameInDb = "location")
     private String location;
 
@@ -41,13 +44,14 @@ public class Appointment{
     @Generated(hash = 1077317242)
     private transient AppointmentDao myDao;
 
-    @Generated(hash = 709457673)
+    @Generated(hash = 1082360251)
     public Appointment(Long appointmentID, String title, Long doctorID, String date,
-            String location, String notes, Long reminder) {
+            String time, String location, String notes, Long reminder) {
         this.appointmentID = appointmentID;
         this.title = title;
         this.doctorID = doctorID;
         this.date = date;
+        this.time = time;
         this.location = location;
         this.notes = notes;
         this.reminder = reminder;
@@ -179,6 +183,14 @@ public class Appointment{
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public String getTime() {
+        return this.time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     /** called by internal mechanisms, do not call yourself. */
