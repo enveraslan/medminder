@@ -29,7 +29,7 @@ public class DoctorDetailsActivity extends AppCompatActivity {
 
         init();
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(fullName);
+        toolbar.setTitle("DR. " + fullName);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -63,7 +63,6 @@ public class DoctorDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     public void clickEditDoctorButton(View view) {
         Intent intent = new Intent(this, AddDoctorActivity.class);

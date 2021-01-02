@@ -20,6 +20,7 @@ import com.aae.medminder.database.DbOpenHelper;
 import com.aae.medminder.models.DaoMaster;
 import com.aae.medminder.models.DaoSession;
 import com.aae.medminder.models.Doctor;
+import com.aae.medminder.models.DoctorDao;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,8 @@ public class DoctorsActivity extends AppCompatActivity {
     private void init() {
         recyclerViewDoctors = findViewById(R.id.recyclerViewDoctors);
         doctors = new ArrayList<>();
-        doctors = new ArrayList<Doctor>(((MedminderApp)getApplication()).getDaoSession().getDoctorDao().loadAll());
+        doctors = new ArrayList<Doctor>(((MedminderApp)getApplication()).getDaoSession().getDoctorDao().queryBuilder()
+        .where(DoctorDao.Properties.DoctorID.notEq(1L)).list());
         DoctorRecyclerViewAdapter dcRcvAdapter = new DoctorRecyclerViewAdapter(this, doctors);
         recyclerViewDoctors.setAdapter(dcRcvAdapter);
         recyclerViewDoctors.setLayoutManager(new LinearLayoutManager(this));
