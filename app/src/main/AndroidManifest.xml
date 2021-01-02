@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aae.medminder">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".MedminderApp"
         android:icon="@mipmap/ic_launcher"
@@ -12,32 +9,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ProfileActivity" android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".AddMeasurementActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".AppointmentsActivity" />
-        <activity android:name=".AddAppointmentActivity" />
-        <activity android:name=".DoctorMedicationActivity" />
-        <activity android:name=".DoctorDetailsActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".AddDoctorActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".DoctorsActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".AddMedicineActivity" />
-        <activity android:name=".TreatmentActivity" />
-        <activity android:name=".PermissionsActivity" />
-        <activity android:name=".MapActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_api" />
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddMeasurementActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".AppointmentsActivity" />
+        <activity android:name=".AddAppointmentActivity" />
+        <activity android:name=".DoctorMedicationActivity" />
+        <activity
+            android:name=".DoctorDetailsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddDoctorActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".DoctorsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".AddMedicineActivity" />
+        <activity android:name=".TreatmentActivity" />
+        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".MapActivity" />
+
+        <activity android:name=".MainActivity"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api" />
+
+        <receiver android:name=".notification.NotificationPublisher" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

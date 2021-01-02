@@ -1,5 +1,7 @@
 package com.aae.medminder;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,7 +25,9 @@ import com.aae.medminder.models.MedicineTreatment;
 import com.aae.medminder.models.MedicineTreatmentDao;
 import com.aae.medminder.models.MedicineUnit;
 import com.aae.medminder.models.MedicineUnitDao;
+import com.aae.medminder.notification.NotificationScheduler;
 
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -238,6 +242,24 @@ public class MainTreatmentRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
                                 .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
                                 .list().get(0);
                         medicine.setCount(medicine.getCount() - Long.valueOf(amount.getText().toString()));
+
+                        if(medicine.getCount() < 5){
+                            Notification notification = NotificationScheduler.createNotification(itemView.getContext().getApplicationContext(),
+                                    "Medminder",
+                                    "You're running low on "+medicine.getName(),
+                                    R.drawable.ac_count_warning_small,
+                                    R.drawable.ac_count_warning_big,
+                                    MainActivity.class);
+
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.add(Calendar.HOUR, 2);
+                            NotificationScheduler.scheduleRepeatingNotification(itemView.getContext().getApplicationContext(),
+                                    notification,
+                                    2000 + medicineTreatment.getTreatmentID().intValue(),
+                                    calendar,
+                                    AlarmManager.INTERVAL_DAY);
+                        }
+
                         MedminderApp.getDaoSession().update(medicine);
                     } catch (IndexOutOfBoundsException ex) {
 
