@@ -22,7 +22,7 @@ public class MedminderApp extends Application {
         return daoSession;
     }
 
-    public static void UpdateSession(){
+    public static void updateSession(){
         daoSession = new DaoMaster(new DbOpenHelper(appContext, "medminder.db").getWritableDb()).newSession();
     }
 

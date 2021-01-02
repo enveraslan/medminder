@@ -271,7 +271,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
 
-        MedminderApp.UpdateSession();
+        MedminderApp.updateSession();
     }
 
     private void deleteMedicine(){
@@ -288,7 +288,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         MedminderApp.getDaoSession().getDatabase().execSQL(deleteTreatment);
         MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicine);
 
-        MedminderApp.UpdateSession();
+        MedminderApp.updateSession();
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
