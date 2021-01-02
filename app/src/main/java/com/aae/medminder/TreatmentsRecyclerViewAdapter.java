@@ -91,7 +91,7 @@ public class TreatmentsRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 if (detail.getTreatmentType().equals("MED")) {
                     try {
                         medicineTreatment = MedminderApp.getDaoSession().getMedicineTreatmentDao().queryBuilder()
-                                .where(MedicineTreatmentDao.Properties.MedicineTreatmentID.eq(detail.getTreatmentID()))
+                                .where(MedicineTreatmentDao.Properties.TreatmentID.eq(detail.getTreatmentID()))
                                 .list().get(0);
                         medicine = MedminderApp.getDaoSession().getMedicineDao().queryBuilder()
                                 .where(MedicineDao.Properties.MedicineID.eq(medicineTreatment.getMedicineID()))
