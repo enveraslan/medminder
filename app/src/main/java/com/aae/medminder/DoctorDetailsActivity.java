@@ -47,8 +47,6 @@ public class DoctorDetailsActivity extends AppCompatActivity {
         textViewLocation = findViewById(R.id.textViewLocation);
         buttonEditDoctor = findViewById(R.id.buttonSaveDoctor);
 
-
-
         if(getIntent().hasExtra("doctorID") && getIntent().hasExtra("doctorFullName") &&
                 getIntent().hasExtra("phoneNumber") && getIntent().hasExtra("email") &&
                 getIntent().hasExtra("location")){
@@ -59,8 +57,6 @@ public class DoctorDetailsActivity extends AppCompatActivity {
             textViewEmail.setText(getIntent().getStringExtra("email"));
             textViewLocation.setText(getIntent().getStringExtra("location"));
 
-        } else {
-            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
         }
     }
 
