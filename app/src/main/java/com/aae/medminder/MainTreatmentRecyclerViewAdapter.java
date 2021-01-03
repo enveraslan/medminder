@@ -297,6 +297,8 @@ public class MainTreatmentRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
             buttonLayout = itemView.findViewById(R.id.buttonLayout);
             valueLayout = itemView.findViewById(R.id.valueLayout);
             timeLayout = itemView.findViewById(R.id.measurementTimeLayout);
+            snoozeButton = itemView.findViewById(R.id.buttonMeasurementSnooze);
+            confirmButton = itemView.findViewById(R.id.buttonMeasurementConfirm);
 
 
             measurementLayout.setOnClickListener(new View.OnClickListener(){
@@ -307,6 +309,48 @@ public class MainTreatmentRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
                     TreatmentDetail info = mData.get(getAdapterPosition());
                     info.setExpandable(!info.isExpandable());
                     notifyItemChanged(getAdapterPosition());
+                }
+            });
+
+            snoozeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TreatmentDetail info = mData.get(getAdapterPosition());
+                    try {
+                        MeasurementTreatment measurementTreatment = MedminderApp.getDaoSession()
+                                .getMeasurementTreatmentDao().queryBuilder()
+                                .where(MeasurementTreatmentDao.Properties.MeasurementTreatmentID.eq(info.getTreatmentID()))
+                                .list().get(0);
+                        measurementTreatment.setMeasured("S");
+                        MedminderApp.getDaoSession().update(measurementTreatment);
+                    } catch (IndexOutOfBoundsException ex) {
+
+                    }
+                    mData.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                    notifyItemRangeChanged(getAdapterPosition(), mData.size());
+                }
+            });
+
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TreatmentDetail info = mData.get(getAdapterPosition());
+                    try {
+                        MeasurementTreatment measurementTreatment = MedminderApp.getDaoSession()
+                                .getMeasurementTreatmentDao().queryBuilder()
+                                .where(MeasurementTreatmentDao.Properties.MeasurementTreatmentID.eq(info.getTreatmentID()))
+                                .list().get(0);
+                        measurementTreatment.setMeasured("M");
+                        measurementTreatment.setValue(Long.valueOf(editTextMeasurementValue.getText().toString()));
+                        MedminderApp.getDaoSession().update(measurementTreatment);
+
+                    } catch (IndexOutOfBoundsException ex) {
+
+                    }
+                    mData.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                    notifyItemRangeChanged(getAdapterPosition(), mData.size());
                 }
             });
         }
