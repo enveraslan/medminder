@@ -56,6 +56,10 @@ public class AddAppointmentActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_appointment);
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 30);
+
 
         appointmentID = getIntent().getLongExtra("appointmentID", 0);
 
@@ -250,11 +254,10 @@ public class AddAppointmentActivity extends AppCompatActivity {
                     MainActivity.class);
 
             calendar.add(Calendar.HOUR,-2);
-            NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+            NotificationScheduler.scheduleNotification(getApplicationContext(),
                     notification,
                     (1000 + appointment.getAppointmentID().intValue()),
-                    calendar,
-                    AlarmManager.INTERVAL_DAY);
+                    calendar);
 
         }
         else if(appointment.getAppointmentID() != null){
