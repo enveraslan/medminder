@@ -1,12 +1,12 @@
 package com.aae.medminder;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.MediaMetadata;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,10 +24,10 @@ import com.aae.medminder.models.MeasurementTreatment;
 import com.aae.medminder.models.MeasurementTreatmentDao;
 import com.aae.medminder.models.MeasurementType;
 import com.aae.medminder.models.MeasurementTypeDao;
-import com.aae.medminder.models.MedicineUnit;
 import com.aae.medminder.models.Treatment;
 import com.aae.medminder.models.TreatmentDao;
 import com.aae.medminder.models.TreatmentType;
+import com.aae.medminder.notification.NotificationScheduler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +43,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
     private Button buttonSetMeasurementTime;
     private Button buttonSaveMeasurement;
     private Button buttonDeleteMeasurement;
-    private long measurementId;
+    private Long treatmentId;
+    private Calendar calendar = null;
 
     private Context context = this;
 
@@ -51,13 +52,16 @@ public class AddMeasurementActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_measurement);
-        measurementId = getIntent().getLongExtra("treatmentId", 0);
+        treatmentId = getIntent().getLongExtra("treatmentId", 0);
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle("Add Measurement");
         mToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 30);
 
         spinnerMeasurement = findViewById(R.id.spinnerMeasurement);
         editTextMeasurementTime = findViewById(R.id.editTextMeasurementTime);
@@ -70,7 +74,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                final Calendar calendar = Calendar.getInstance();
                 final int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
@@ -82,6 +85,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
                                 String hS = (hourOfDay < 10 || hourOfDay == 24) ? "0" + hourOfDay : Integer.toString(hourOfDay);
                                 String mS = (minute < 10 || minute == 60) ? "0" + minute : Integer.toString(minute);
                                 editTextMeasurementTime.setText(hS + ":" + mS);
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
                             }
                         }, hour, minute, true);
                 tpd.setButton(TimePickerDialog.BUTTON_POSITIVE, "Choose", tpd);
@@ -98,16 +103,22 @@ public class AddMeasurementActivity extends AppCompatActivity {
         spinnerMeasurement.setAdapter(adapterMeasurementType);
         spinnerMeasurement.setOnItemSelectedListener(new measurementItemSelectedListener());
 
-        if(measurementId > 0){
+        if(treatmentId > 0){
             buttonDeleteMeasurement.setVisibility(View.VISIBLE);
             mToolbar.setTitle("Edit Measurement");
-            setMeasurement(measurementId);
+            setMeasurement(treatmentId);
         }
-
         buttonSaveMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveMeasurement();
+            }
+        });
+
+        buttonDeleteMeasurement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteMeasurement();
             }
         });
 
@@ -119,16 +130,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
         String firstItem = String.valueOf(spinnerMeasurement.getSelectedItem());
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
             if (firstItem.equals(String.valueOf(spinnerMeasurement.getSelectedItem()))) {
-                // ToDo when first item is selected
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
-
-            } else {
-                //Toast.makeText(parent.getContext(),
-                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        //Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
             }
         }
 
@@ -142,48 +145,109 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
     private void saveMeasurement() {
         Treatment treatment = new Treatment();
-        treatment.setTreatmentID(null);
-        treatment.setTreatmentType(new TreatmentType("MEA", "Measurement"));
-        Calendar createdDate = Calendar.getInstance();
-        treatment.setCreatedDate(createdDate.getTime().toString());
+        if(treatmentId > 0){
+            UpdateMeasurement();
+        }else{
+            treatment.setTreatmentID(null);
+            treatment.setTreatmentType(new TreatmentType("MEA", "Measurement"));
+            Calendar createdDate = Calendar.getInstance();
+            treatment.setCreatedDate(createdDate.getTime().toString());
 
-        ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().insert(treatment);
+            MedminderApp.getDaoSession().getTreatmentDao().insert(treatment);
 
-        List<Treatment> treatmentQuery = ((MedminderApp)getApplication()).getDaoSession().getTreatmentDao().queryBuilder()
-                .where(TreatmentDao.Properties.TreatmentTypeID.eq("MEA"))
-                .where(TreatmentDao.Properties.CreatedDate.eq(createdDate.getTime().toString()))
-                .list();
-        MeasurementType measurementType = MedminderApp.getDaoSession().getMeasurementTypeDao().queryBuilder()
-                .where(MeasurementTypeDao.Properties.Title.eq(spinnerMeasurement.getSelectedItem().toString()))
-                .list().get(0);
+            List<Treatment> treatmentQuery = MedminderApp.getDaoSession().getTreatmentDao().queryBuilder()
+                    .where(TreatmentDao.Properties.TreatmentTypeID.eq("MEA"))
+                    .where(TreatmentDao.Properties.CreatedDate.eq(createdDate.getTime().toString()))
+                    .list();
+            MeasurementType measurementType = MedminderApp.getDaoSession().getMeasurementTypeDao().queryBuilder()
+                    .where(MeasurementTypeDao.Properties.Title.eq(spinnerMeasurement.getSelectedItem().toString()))
+                    .list().get(0);
 
-        try {
-            Calendar date = Calendar.getInstance();
-            treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
+            try {
+                Calendar date = Calendar.getInstance();
+                treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
 
-            for(int i = 0; i < 30; i++) {
-                MeasurementTreatment measurementTreatment = new MeasurementTreatment();
-                measurementTreatment.setMeasurementTreatmentID(null);
-                measurementTreatment.setMeasurementType(measurementType);
-                measurementTreatment.setTreatment(treatment);
-                measurementTreatment.setMeasured("N");
-                measurementTreatment.setTime(editTextMeasurementTime.getText().toString());
-                measurementTreatment.setDate(sdf.format(date.getTime()));
-                MedminderApp.getDaoSession().getMeasurementTreatmentDao().insert(measurementTreatment);
-                date.add(Calendar.DAY_OF_MONTH, 1);
-            }
+                for(int i = 0; i < 30; i++) {
+                    MeasurementTreatment measurementTreatment = new MeasurementTreatment();
+                    measurementTreatment.setMeasurementTreatmentID(null);
+                    measurementTreatment.setMeasurementType(measurementType);
+                    measurementTreatment.setTreatment(treatment);
+                    measurementTreatment.setMeasured("N");
+                    measurementTreatment.setTime(editTextMeasurementTime.getText().toString());
+                    measurementTreatment.setDate(sdf.format(date.getTime()));
+                    MedminderApp.getDaoSession().getMeasurementTreatmentDao().insert(measurementTreatment);
+                    date.add(Calendar.DAY_OF_MONTH, 1);
+                }
+            }catch (IndexOutOfBoundsException ex) {}
+        }
 
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to measure "+ spinnerMeasurement.getSelectedItem().toString(),
+                R.drawable.ac_glucose_meter,
+                R.drawable.ac_measurement_notificiation_big,
+                MainActivity.class);
 
-        }catch (IndexOutOfBoundsException ex) {}
+        calendar.add(Calendar.MINUTE,-5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatment.getTreatmentID().toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
+
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
 
     }
 
-    private void setMeasurement(long treatmentId){
-        Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
+    private void UpdateMeasurement() {
 
+        MeasurementType measurementType = MedminderApp.getDaoSession().getMeasurementTypeDao().queryBuilder()
+                .where(MeasurementTypeDao.Properties.Title.eq(spinnerMeasurement.getSelectedItem().toString()))
+                .list().get(0);
+
+        String updateMeasurementTreatmentQuery = String.format("update "+ MeasurementTreatmentDao.TABLENAME +" set "
+                + MeasurementTreatmentDao.Properties.Time.columnName + " = '%s', "
+                + MeasurementTreatmentDao.Properties.MeasurementTypeID.columnName + " = '%s'"
+                + " where " + MeasurementTreatmentDao.Properties.TreatmentID.columnName + " = '%d'", editTextMeasurementTime.getText().toString(), measurementType.getMeasurementTypeID(),  treatmentId);
+
+        MedminderApp.getDaoSession().getDatabase().execSQL(updateMeasurementTreatmentQuery);
+        MedminderApp.updateSession();
+
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to measure "+ spinnerMeasurement.getSelectedItem().toString(),
+                R.drawable.ac_glucose_meter,
+                R.drawable.ac_measurement_notificiation_big,
+                MainActivity.class);
+
+        calendar.add(Calendar.MINUTE,-5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatmentId.toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
+    }
+
+    private void DeleteMeasurement(){
+        String deleteTreatmentQuery = String.format("delete from " + TreatmentDao.TABLENAME +
+                " where " + TreatmentDao.Properties.TreatmentID.columnName + " = %d", treatmentId);
+
+        String deleteMeasurementTreatmentQuery = String.format("delete from "+ MeasurementTreatmentDao.TABLENAME
+                + " where " + MeasurementTreatmentDao.Properties.TreatmentID.columnName + " = '%d'", treatmentId);
+
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteTreatmentQuery);
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteMeasurementTreatmentQuery);
+        MedminderApp.updateSession();
+
+        NotificationScheduler.cancelNotification(getApplicationContext(), Integer.parseInt(treatmentId.toString()));
+
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void setMeasurement(long treatmentId){
         List<MeasurementTreatment> measurementTreatments = MedminderApp.getDaoSession()
                 .getMeasurementTreatmentDao().queryBuilder()
                 .where(MeasurementTreatmentDao.Properties.TreatmentID.eq(treatmentId))
@@ -197,9 +261,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .getDaoSession().getMeasurementTypeDao().queryBuilder()
                     .where(MeasurementTypeDao.Properties.MeasurementTypeID.eq(measurementTreatment.getMeasurementTypeID()))
                     .list().get(0);
-            Toast.makeText(context, measurementTreatment.getMeasurementType().getTitle().toString(), Toast.LENGTH_LONG).show();
             spinnerMeasurement.setSelection(getIndex(spinnerMeasurement, measurementTreatment.getMeasurementType().getTitle()));
             editTextMeasurementTime.setText(measurementTreatment.getTime());
+
+            String timeText = measurementTreatment.getTime();
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeText.split(":")[0].trim()));
+            calendar.set(Calendar.MINUTE, Integer.parseInt(timeText.split(":")[1].trim()));
         }
 
     }

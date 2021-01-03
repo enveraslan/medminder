@@ -116,7 +116,7 @@ public class TreatmentsRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 if (detail.getTreatmentType().equals("MEA")) {
                     try {
                         measurementTreatment = MedminderApp.getDaoSession().getMeasurementTreatmentDao().queryBuilder()
-                                .where(MeasurementTreatmentDao.Properties.MeasurementTreatmentID.eq(detail.getTreatmentID()))
+                                .where(MeasurementTreatmentDao.Properties.TreatmentID.eq(detail.getTreatmentID()))
                                 .list().get(0);
                         measurementType = MedminderApp.getDaoSession().getMeasurementTypeDao().queryBuilder()
                                 .where(MeasurementTypeDao.Properties.MeasurementTypeID.eq(measurementTreatment.getMeasurementTypeID()))

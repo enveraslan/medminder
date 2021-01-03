@@ -125,9 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnHorizontalDateS
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-    }
+    public void onItemClick(View view, int position) {}
 
     public void getTreatments(String date) {
         treatmentList = new ArrayList<TreatmentDetail>();

@@ -56,7 +56,6 @@ public class AppointmentsActivity extends AppCompatActivity implements Appointme
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(this, "You clicked " + adapter.getItem(position). + " on row number " + position, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(context, AddAppointmentActivity.class);
         intent.putExtra("appointmentID", adapter.getItem(position).getAppointmentID());
         finish();

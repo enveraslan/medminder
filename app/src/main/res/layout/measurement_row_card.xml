@@ -100,7 +100,7 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/buttonMedicineConfirm"
+                android:id="@+id/buttonMeasurementConfirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -109,7 +109,7 @@
                 android:background="#2791e8"/>
 
             <Button
-                android:id="@+id/buttonMedicineSnooze"
+                android:id="@+id/buttonMeasurementSnooze"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"

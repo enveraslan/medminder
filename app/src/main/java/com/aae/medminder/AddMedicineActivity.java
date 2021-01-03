@@ -1,5 +1,8 @@
 package com.aae.medminder;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +28,7 @@ import com.aae.medminder.models.MedicineUnit;
 import com.aae.medminder.models.Treatment;
 import com.aae.medminder.models.TreatmentDao;
 import com.aae.medminder.models.TreatmentType;
+import com.aae.medminder.notification.NotificationScheduler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private Long dosage = Long.valueOf(1);
     private Long treatmentId;
     private Long medicineId;
+    private Calendar calendar = null;
 
     Context context = this;
 
@@ -59,11 +64,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medicine);
         treatmentId = getIntent().getLongExtra("treatmentId", 0);
-
-        //TEST
-        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
-        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
-
 
         editTextMedicineName = findViewById(R.id.editTextMedicineName);
         editTextDosage = findViewById(R.id.editTextDosage);
@@ -76,6 +76,10 @@ public class AddMedicineActivity extends AppCompatActivity {
         buttonDecreaseDosage = findViewById(R.id.buttonDecreaseDosage);
         buttonIncreaseDosage = findViewById(R.id.buttonIncreaseDosage);
 
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 30);
+
         List<MedicineUnit> medicineUnits =  new ArrayList<MedicineUnit>(((MedminderApp)getApplication()).getDaoSession().getMedicineUnitDao().loadAll());
         ArrayAdapter<MedicineUnit> adapterMedicineUnit = new ArrayAdapter<MedicineUnit>(this, android.R.layout.simple_spinner_item, medicineUnits);
         adapterMedicineUnit.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -87,7 +91,7 @@ public class AddMedicineActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                final Calendar calendar = Calendar.getInstance();
+                calendar = Calendar.getInstance();
                 final int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
@@ -99,6 +103,8 @@ public class AddMedicineActivity extends AppCompatActivity {
                                 String hS = (hourOfDay < 10 || hourOfDay == 24) ? "0" + hourOfDay : Integer.toString(hourOfDay);
                                 String mS = (minute < 10 || minute == 60) ? "0" + minute : Integer.toString(minute);
                                 editTextTime.setText(hS + ":" + mS);
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
                             }
                         }, hour, minute, true);
                 tpd.setButton(TimePickerDialog.BUTTON_POSITIVE, "Choose", tpd);
@@ -151,8 +157,12 @@ public class AddMedicineActivity extends AppCompatActivity {
             }
         });
 
-
-
+        buttonDeleteMedicine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteMedicine();
+            }
+        });
     }
 
     public class medicineItemSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -163,14 +173,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
             if (firstItem.equals(String.valueOf(spinnerMedicineUnit.getSelectedItem()))) {
-                // ToDo when first item is selected
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
-
-            } else {
-                //Toast.makeText(parent.getContext(),
-                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        //Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
             }
         }
 
@@ -183,6 +186,11 @@ public class AddMedicineActivity extends AppCompatActivity {
 
     private void saveMedicine() {
 
+        if(calendar == null){
+            calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 6);
+            calendar.set(Calendar.MINUTE, 30);
+        }
         Treatment treatment = new Treatment();
         treatment.setTreatmentID(null);
         treatment.setTreatmentType(new TreatmentType("MED", "Medicine"));
@@ -199,7 +207,6 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         //Update
             try {
-
                 //Update
                 if(treatmentId > 0){
                     UpdateMedicine();
@@ -224,19 +231,30 @@ public class AddMedicineActivity extends AppCompatActivity {
                     treatment.setTreatmentID(treatmentQuery.get(0).getTreatmentID());
 
                     for(int i = 0; i < 30; i++) {
-                        InsertMedicine(treatment, medicine, date);
+                        InsertMedicineTreatment(treatment, medicine, date);
                     }
                 }
             } catch (IndexOutOfBoundsException ex) {
                 Log.e("MedicineOperation", ex.getMessage());
             }
-
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to consume "+medicine.getName(),
+                R.drawable.ac_pill2,
+                R.drawable.ac_pill,
+                MainActivity.class);
+            calendar.add(Calendar.MINUTE,-5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatment.getTreatmentID().toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void InsertMedicine(Treatment treatment, Medicine medicine, Calendar date) {
+    private void InsertMedicineTreatment(Treatment treatment, Medicine medicine, Calendar date) {
 
         MedicineTreatment medicineTreatment = new MedicineTreatment();
         medicineTreatment.setMedicineTreatmentID(null);
@@ -251,9 +269,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         date.add(Calendar.DAY_OF_MONTH, 1);
     }
     private void UpdateMedicine() {
-        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
-        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
-
         String updateQueryMedicineTreatment = String.format("update " + MedicineTreatmentDao.TABLENAME + " set "
                 + MedicineTreatmentDao.Properties.Time.columnName + " = '%s',"
                 + MedicineTreatmentDao.Properties.Dosage.columnName + " = %d"
@@ -271,13 +286,46 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryMedicineTreatment);
         MedminderApp.getDaoSession().getDatabase().execSQL(updateQueryTreatment);
+        MedminderApp.updateSession();
 
-        MedminderApp.UpdateSession();
+        Notification notification = NotificationScheduler.createNotification(getApplicationContext(),
+                "Medminder",
+                "Don't forget to consume "+editTextMedicineName.getText().toString(),
+                R.drawable.ac_pill2,
+                R.drawable.ac_pill,
+                MainActivity.class);
+        calendar.add(Calendar.MINUTE, -5);
+        NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
+                notification,
+                Integer.parseInt(treatmentId.toString()),
+                calendar,
+                AlarmManager.INTERVAL_DAY);
+
+    }
+
+    private void deleteMedicine(){
+        String deleteTreatment = String.format("delete from " + TreatmentDao.TABLENAME +
+                " where " + TreatmentDao.Properties.TreatmentID.columnName + " = %d", treatmentId);
+
+        String deleteMedicineTreatment = String.format("delete from " + MedicineTreatmentDao.TABLENAME
+                + " where " + MedicineTreatmentDao.Properties.TreatmentID.columnName + " = %d", treatmentId);
+
+        String deleteMedicine = String.format("delete from " + MedicineDao.TABLENAME
+                + " where " + MedicineDao.Properties.MedicineID.columnName + " = %d", medicineId);
+
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicineTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteTreatment);
+        MedminderApp.getDaoSession().getDatabase().execSQL(deleteMedicine);
+
+        MedminderApp.updateSession();
+
+        NotificationScheduler.cancelNotification(getApplicationContext(), Integer.parseInt(treatmentId.toString()));
+
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void setMedicine(long treatmentId){
-
-       // Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
 
         List<Treatment> treatments = MedminderApp
                 .getDaoSession().getTreatmentDao().queryBuilder()
@@ -288,7 +336,6 @@ public class AddMedicineActivity extends AppCompatActivity {
                 .getDaoSession().getMedicineTreatmentDao().queryBuilder()
                 .where(MedicineTreatmentDao.Properties.TreatmentID.eq(treatmentId))
                 .list();
-
 
         if(medicineTreatments.size() > 0){
             MedicineTreatment medicineTreatment = medicineTreatments.get(0);
@@ -301,13 +348,14 @@ public class AddMedicineActivity extends AppCompatActivity {
             editTextMedicineName.setText(medicine.getName());
             editTextDosage.setText(medicineTreatment.getDosage().toString());
             dosage = medicineTreatment.getDosage();
-            Toast.makeText(context, String.valueOf(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle())), Toast.LENGTH_LONG).show();
             spinnerMedicineUnit.setSelection(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle()));
             editTextTime.setText(medicineTreatment.getTime());
             editTextRemaining.setText(medicine.getCount().toString());
+
+            String timeText = medicineTreatment.getTime();
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeText.split(":")[0].trim()));
+            calendar.set(Calendar.MINUTE, Integer.parseInt(timeText.split(":")[1].trim()));
         }
-
-
     }
     private int getIndex(Spinner spinner, String myString){
 
