@@ -59,6 +59,9 @@ public class AddMeasurementActivity extends AppCompatActivity {
         mToolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 30);
 
         spinnerMeasurement = findViewById(R.id.spinnerMeasurement);
         editTextMeasurementTime = findViewById(R.id.editTextMeasurementTime);
@@ -127,16 +130,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
         String firstItem = String.valueOf(spinnerMeasurement.getSelectedItem());
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
             if (firstItem.equals(String.valueOf(spinnerMeasurement.getSelectedItem()))) {
-                // ToDo when first item is selected
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
-
-            } else {
-                //Toast.makeText(parent.getContext(),
-                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        //Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
             }
         }
 
@@ -253,8 +248,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
     }
 
     private void setMeasurement(long treatmentId){
-        Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
-
         List<MeasurementTreatment> measurementTreatments = MedminderApp.getDaoSession()
                 .getMeasurementTreatmentDao().queryBuilder()
                 .where(MeasurementTreatmentDao.Properties.TreatmentID.eq(treatmentId))
@@ -268,9 +261,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .getDaoSession().getMeasurementTypeDao().queryBuilder()
                     .where(MeasurementTypeDao.Properties.MeasurementTypeID.eq(measurementTreatment.getMeasurementTypeID()))
                     .list().get(0);
-            Toast.makeText(context, measurementTreatment.getMeasurementType().getTitle().toString(), Toast.LENGTH_LONG).show();
             spinnerMeasurement.setSelection(getIndex(spinnerMeasurement, measurementTreatment.getMeasurementType().getTitle()));
             editTextMeasurementTime.setText(measurementTreatment.getTime());
+
+            String timeText = measurementTreatment.getTime();
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeText.split(":")[0].trim()));
+            calendar.set(Calendar.MINUTE, Integer.parseInt(timeText.split(":")[1].trim()));
         }
 
     }

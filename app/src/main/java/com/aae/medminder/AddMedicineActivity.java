@@ -65,10 +65,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_medicine);
         treatmentId = getIntent().getLongExtra("treatmentId", 0);
 
-        //TEST
-        List<MedicineTreatment> medicineTreatmentList = MedminderApp.getDaoSession().getMedicineTreatmentDao().loadAll();
-        List<Medicine> medicineList = MedminderApp.getDaoSession().getMedicineDao().loadAll();
-
         editTextMedicineName = findViewById(R.id.editTextMedicineName);
         editTextDosage = findViewById(R.id.editTextDosage);
         editTextRemaining = findViewById(R.id.editTextRemaining);
@@ -79,6 +75,10 @@ public class AddMedicineActivity extends AppCompatActivity {
         buttonDeleteMedicine = findViewById(R.id.buttonDeleteMedicine);
         buttonDecreaseDosage = findViewById(R.id.buttonDecreaseDosage);
         buttonIncreaseDosage = findViewById(R.id.buttonIncreaseDosage);
+
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 30);
 
         List<MedicineUnit> medicineUnits =  new ArrayList<MedicineUnit>(((MedminderApp)getApplication()).getDaoSession().getMedicineUnitDao().loadAll());
         ArrayAdapter<MedicineUnit> adapterMedicineUnit = new ArrayAdapter<MedicineUnit>(this, android.R.layout.simple_spinner_item, medicineUnits);
@@ -173,14 +173,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
             if (firstItem.equals(String.valueOf(spinnerMedicineUnit.getSelectedItem()))) {
-                // ToDo when first item is selected
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#808080"));
-
-            } else {
-                //Toast.makeText(parent.getContext(),
-                        //"You have selected : " + parent.getItemAtPosition(pos).toString(),
-                        //Toast.LENGTH_LONG).show();
-                // Todo when item is selected by the user
             }
         }
 
@@ -193,6 +186,11 @@ public class AddMedicineActivity extends AppCompatActivity {
 
     private void saveMedicine() {
 
+        if(calendar == null){
+            calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 6);
+            calendar.set(Calendar.MINUTE, 30);
+        }
         Treatment treatment = new Treatment();
         treatment.setTreatmentID(null);
         treatment.setTreatmentType(new TreatmentType("MED", "Medicine"));
@@ -245,7 +243,6 @@ public class AddMedicineActivity extends AppCompatActivity {
                 R.drawable.ac_pill2,
                 R.drawable.ac_pill,
                 MainActivity.class);
-
             calendar.add(Calendar.MINUTE,-5);
         NotificationScheduler.scheduleRepeatingNotification(getApplicationContext(),
                 notification,
@@ -330,8 +327,6 @@ public class AddMedicineActivity extends AppCompatActivity {
 
     private void setMedicine(long treatmentId){
 
-       // Toast.makeText(this, "Treatment ID: " +treatmentId, Toast.LENGTH_LONG).show();
-
         List<Treatment> treatments = MedminderApp
                 .getDaoSession().getTreatmentDao().queryBuilder()
                 .where(TreatmentDao.Properties.TreatmentID.eq(treatmentId))
@@ -353,10 +348,13 @@ public class AddMedicineActivity extends AppCompatActivity {
             editTextMedicineName.setText(medicine.getName());
             editTextDosage.setText(medicineTreatment.getDosage().toString());
             dosage = medicineTreatment.getDosage();
-            Toast.makeText(context, String.valueOf(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle())), Toast.LENGTH_LONG).show();
             spinnerMedicineUnit.setSelection(getIndex(spinnerMedicineUnit,medicine.getMedicineUnit().getTitle()));
             editTextTime.setText(medicineTreatment.getTime());
             editTextRemaining.setText(medicine.getCount().toString());
+
+            String timeText = medicineTreatment.getTime();
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeText.split(":")[0].trim()));
+            calendar.set(Calendar.MINUTE, Integer.parseInt(timeText.split(":")[1].trim()));
         }
     }
     private int getIndex(Spinner spinner, String myString){
